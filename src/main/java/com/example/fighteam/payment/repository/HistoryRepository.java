@@ -1,4 +1,4 @@
 package com.example.fighteam.payment.repository;
 
-public class History {
+public interface HistoryRepository {
 }
