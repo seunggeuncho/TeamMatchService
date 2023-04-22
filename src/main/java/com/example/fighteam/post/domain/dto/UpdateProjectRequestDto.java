@@ -11,6 +11,12 @@ public class UpdateProjectRequestDto {
     private Date startDate;
     private Date endDate;
     private int deposit;
+    private List<String> typeContent;
+    private List<String> languageContent;
+    private String title;
+    private String content;
+    private String post_id;
+    private Long user_id;
 
     public UpdateProjectRequestDto(int memberCount, Date startDate, Date endDate, int deposit, List<String> typeContent, List<String> languageContent, String title, String content, String post_id, Long user_id) {
         this.memberCount = memberCount;
@@ -25,10 +31,5 @@ public class UpdateProjectRequestDto {
         this.user_id = user_id;
     }
 
-    private List<String> typeContent;
-    private List<String> languageContent;
-    private String title;
-    private String content;
-    private String post_id;
-    private Long user_id;
+
 }
