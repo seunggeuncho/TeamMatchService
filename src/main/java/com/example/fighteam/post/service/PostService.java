@@ -34,4 +34,16 @@ public class PostService {
     public void detailStudy() {
 
     }
+
+    public void updateProject(UpdateProjectRequestDto updateProjectRequestDto){
+
+    }
+
+    public void deleteProject(DeleteProjectRequestDto deleteProjectRequestDto){
+
+    }
+
+    public void updateStudy(UpdateStudyRequestDto updateStudyRequestDto){
+
+    }
 }
