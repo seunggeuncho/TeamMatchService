@@ -31,7 +31,6 @@
     <div></div>
 </div>
 
-
 <input type="hidden" th:value="${roomInfo}" id="roomInfoId"/>
 <input type="hidden" th:value="${nowSender}" id="nowSender"/>
 <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
@@ -56,20 +55,16 @@
         created() {
             this.senderId = getUserId;
             this.roomId = getRoomId;
-            // this.findSender();
-            // this.findRoom();
             this.findMessage();
         },
         methods: {
             findMessage: function() {
-                // axios.get('/chat/room/'+this.roomId).then(response => { this.room = response.data; });
                 axios.get('/room/'+this.roomId+'/messages').then(response =>{this.messages = response.data;});
             },
             sendMessage: function() {
                 ws.send("/app/chat/message", {}, JSON.stringify({sender:this.senderId, message:this.message, roomId:this.roomId}));
                 this.message = '';
             },
-            //파싱되는 객체 이름 맞추기
             recvMessage: function(recv) {
                 this.messages.unshift({"sender":recv.sender, "message":recv.message})
             }
