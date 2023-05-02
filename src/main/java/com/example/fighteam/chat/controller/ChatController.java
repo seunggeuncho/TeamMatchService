@@ -26,9 +26,7 @@ import java.util.List;
 @Controller
 public class ChatController {
 
-    private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
-    private final ChatMessageRepository cMessageRepository;
     private final ChatRoomService chatService;
 
     @PostMapping("/chat/creating")
