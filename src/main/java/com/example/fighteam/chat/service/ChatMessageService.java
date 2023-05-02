@@ -1,6 +1,7 @@
 package com.example.fighteam.chat.service;
 
 import com.example.fighteam.chat.domain.dto.ChatMessageRequestDto;
+import com.example.fighteam.chat.domain.dto.ChatMessageResponseDto;
 import com.example.fighteam.chat.domain.repository.ChatMessage;
 import com.example.fighteam.chat.domain.repository.ChatMessageRepository;
 import com.example.fighteam.chat.domain.repository.ChatRoom;
@@ -11,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author : 김효준
@@ -35,5 +40,15 @@ public class ChatMessageService {
         }
     }
 
-
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponseDto> messageInfoReturn(Long roomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+        List<ChatMessage> messages = chatRoom.getMessages();
+        List<ChatMessageResponseDto> result = new ArrayList<>();
+        for (ChatMessage c : messages) {
+            result.add(new ChatMessageResponseDto(String.valueOf(c.getSender().getId()), c.getMessage(), String.valueOf(roomId)));
+        }
+        Collections.reverse(result);
+        return result;
+    }
 }
