@@ -35,16 +35,6 @@ public class ChatRoomService {
         return chatRoomRepository.findById(roomId).orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public List<ChatMessageResponseDto> messageInfoReturn(Long roomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
-        List<ChatMessage> messages = chatRoom.getMessages();
-        List<ChatMessageResponseDto> result = new ArrayList<>();
-        for (ChatMessage c : messages) {
-            result.add(new ChatMessageResponseDto(String.valueOf(c.getSender().getId()), c.getMessage(), String.valueOf(roomId)));
-        }
 
-        return result;
-    }
 
 }
