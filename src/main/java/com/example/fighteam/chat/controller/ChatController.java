@@ -62,9 +62,5 @@ public class ChatController {
     }
 
     //message내용 가져오기
-    @GetMapping("/room/{roomId}/messages")
-    @ResponseBody
-    public List<ChatMessageResponseDto> messageInfo(@PathVariable Long roomId){
-        return chatService.messageInfoReturn(roomId);
-    }
+
 }
