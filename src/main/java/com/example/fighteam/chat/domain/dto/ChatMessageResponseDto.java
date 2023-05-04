@@ -1,13 +1,22 @@
 package com.example.fighteam.chat.domain.dto;
 
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
+/**
+ * @author : 김효준
+ * @fileName : ChatMessageResponseDto
+ * @since : 2023/04/30
+ */
 @Getter
+@NoArgsConstructor
 public class ChatMessageResponseDto {
+    private String sender;
+    private String message;
+    private String roomId;
 
-    private Long message;
-
-    public ChatMessageResponseDto(Long message) {
+    public ChatMessageResponseDto(String sender, String message, String roomId) {
+        this.sender = sender;
         this.message = message;
+        this.roomId = roomId;
     }
 }

@@ -5,9 +5,9 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author : 김효준
- * @fileName : ChatMessageRepository
- * @since : 2023/04/30
+ * @fileName : ChatRoomRepository
+ * @since : 2023/04/26
  */
 @Repository
-public interface ChatMessageRepository extends JpaRepository<ChatMessage,Long> {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom,Long> {
 }
