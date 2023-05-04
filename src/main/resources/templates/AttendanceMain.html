@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset='utf-8' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js'></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    var clickedDate = '2023-05-02';
+    var memberCnt;
+    var memberList = [];
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var today = new Date();
+
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+
+    var dateString = year + '-' + month  + '-' + day;
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      editable: false,
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+      },
+      initialDate: dateString,
+      navLinks: true, // can click day/week names to navigate views
+      businessHours: true, // display business hours
+
+      selectable: true,
+      dateClick: function(info) {
+        document.getElementById('dialog').style.display = 'flex';
+        document.getElementById('title_date').innerHTML = info.dateStr;
+        document.getElementById('hidden_date').value = info.dateStr;
+        var date = info.date;
+        var hasEvents = calendar.getEvents().some(function(event) {
+        return event.start.toDateString() === date.toDateString();
+      });
+
+        // 클릭한 날짜에 이벤트가 있으면 eventsOnClickedDate 배열의 길이가 1 이상
+        if (hasEvents) {
+                document.getElementById('btn_sub').value='수정';
+                document.getElementById('btn_res').disabled=true;
+                document.getElementById('hidden_type').value='u';
+                $.ajax({
+                    url: '/AttendanceEventsClick',
+                    type: 'POST',
+                    data: JSON.stringify({teamspace_id: 1, date: info.dateStr}),
+                    dataType: 'JSON',
+                    contentType: 'application/json',
+                    success: function(response) {
+                        if(response != null){
+                            memberCnt = response[response.length-1].memberCnt-1;
+                            for(var i = 0; i <= memberCnt; i++) {
+                                    var att_event = response[i];
+                                    if(!memberList.includes(att_event.user_id)){
+                                        memberList.push(att_event.user_id);
+                                    }
+                                    var radio1 = document.getElementById(att_event.user_id+'attend');
+                                    var radio2 = document.getElementById(att_event.user_id+'late');
+                                    var radio3 = document.getElementById(att_event.user_id+'absence');
+                                    if(att_event.att_check == 'attend'){
+                                        radio1.checked = true;
+                                        radio1.disabled = true;
+                                        radio2.disabled = true;
+                                        radio3.disabled = true;
+                                    }else if(att_event.att_check == 'late'){
+                                        radio2.checked = true;
+                                        radio1.disabled = true;
+                                        radio2.disabled = true;
+                                        radio3.disabled = true;
+                                    }else if(att_event.att_check == 'absence'){
+                                        radio3.checked = true;
+                                        radio1.disabled = true;
+                                        radio2.disabled = true;
+                                        radio3.disabled = true;
+                                    }else{
+                                        radio1.checked = false;
+                                        radio1.disabled = false;
+                                        radio2.checked = false;
+                                        radio2.disabled = false;
+                                        radio3.checked = false;
+                                        radio3.disabled = false;
+                                    }
+                            }
+                            document.getElementById('etc').innerHTML = response[0].etc;
+                        }
+                    },
+                    error: function(xhr, status, errorThrown) {
+                        failureCallback(errorThrown);
+                    }
+                });
+
+        }else{
+            document.getElementById('btn_sub').value='완료';
+            document.getElementById('btn_res').disabled=false;
+            document.getElementById('hidden_type').value='c';
+            document.getElementById('etc').innerHTML = '';
+            console.log(memberCnt);
+            console.log(memberList);
+            if(memberCnt != null && memberList != null){
+                for(var i = 0; i <= memberCnt; i++){
+                    var radio1 = document.getElementById(memberList[i]+'attend');
+                    radio1.checked = false;
+                    radio1.disabled = false;
+                    var radio2 = document.getElementById(memberList[i]+'late');
+                    radio2.checked = false;
+                    radio2.disabled = false;
+                    var radio3 = document.getElementById(memberList[i]+'absence');
+                    radio3.checked = false;
+                    radio3.disabled = false;
+                }
+            }
+        }
+
+      },
+      events: function(fetchInfo, successCallback, failureCallback) {
+        $.ajax({
+            url: '/AttendanceEvents',
+            type: 'POST',
+            data: JSON.stringify({teamspace_id: 1}),
+            dataType: 'JSON',
+            contentType: 'application/json',
+            success: function(response) {
+                var events = [];
+                for(var i = 0; i < response.length; i++) {
+                    var event = response[i];
+                    events.push({
+                        id: event.calendar_id,
+                        title: event.user_id+'-'+event.user_id,
+                        start: event.calendar_date,
+                        allDay: true
+                    });
+                }
+                successCallback(events);
+            },
+            error: function(xhr, status, errorThrown) {
+                failureCallback(errorThrown);
+            }
+        });
+
+      }
+
+    });
+
+    calendar.render();
+  });
+
+
+
+
+</script>
+    <style>
+
+  body {
+    margin: 40px 10px;
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: 1100px;
+    margin: left:0 auto;
+  }
+
+  #dialog.dialog-overlay {
+            width: 600px;
+            height: 500px;
+            position: absolute;
+            left: 65%;
+            top: 8%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba( 69, 139, 197, 0.70 );
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(1.5px);
+            -webkit-backdrop-filter: blur(1.5px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+  #deposit_form{
+    width: 600px;
+    height: 350px;
+    position: absolute;
+    left: 65%;
+    top: 60%;
+    display: flex;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba( 224, 224, 224, 0.70 );
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #etc,#history_txt{
+    resize: none;
+  }
+  #history_txt{
+    background: rgba( 224, 224, 224, 0.70 );
+    border: none;
+  }
+
+</style>
+</head>
+<body>
+<div id="contents">
+    <div id="bg"></div>
+    <div id="dialog" class="dialog-overlay"title="일정 관리" style="display:none;">
+        <div class="title">
+            <h1 id="title_date"></h1>
+        </div>
+        <div id="form-div" class="dialog-window">
+            <form th:object="${attendanceCheck}" class="diaForm" id="diaForm" >
+                <input type="hidden" name="calendar_date" id="hidden_date" />
+                <input type="hidden" name="teamspace_id" id="hidden_tsid"/>
+                <input type="hidden" name="form_type" id="hidden_type" value="c"/>
+                <ul>
+                    <li th:each="i : ${#numbers.sequence(0, members.size()-1 )}">
+                        <input type="hidden" name="user_id" th:value="${members[i].user_id}" />
+                        <span th:text="${members[i].user_id}"></span>
+                        <input type="radio" th:name="att_check+${i}" th:id="${members[i].user_id}+attend" th:field="*{att_checks[__${i}__]}" value="attend"/>
+                        <label th:for="${members[i].user_id}+attend+${i}">출석</label>
+                        <input type="radio" th:name="att_check+${i}" th:id="${members[i].user_id}+late" th:field="*{att_checks[__${i}__]}" value="late"/>
+                        <label th:for="${members[i].user_id}+late+${i}">지각</label>
+                        <input type="radio" th:name="att_check+${i}" th:id="${members[i].user_id}+absence" th:field="*{att_checks[__${i}__]}" value="absence"/>
+                        <label th:for="${members[i].user_id}+absence+${i}">결석</label>
+                    </li>
+                </ul>
+                <p class="text">
+                    <textarea name="etc" maxlength="255" class="validate[required,length[6,300]] feedback-input" id="etc" rows="10" cols="40" placeholder="특이 사항"></textarea>
+                </p>
+                <input type="submit" value="완료" id="btn_sub">
+                <input type="reset" value="초기화" id="btn_res">
+            </form>
+        </div>
+
+    </div>
+    <div id="deposit_form">
+
+        <h2 th:text="${depositTitle}" id="deposit_title"></h2>
+        <div id="history_container">
+            <table>
+                <thead>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Cost</th>
+                    <th>Type</th>
+                </thead>
+                <tbody th:if="${not #lists.isEmpty(history)}">
+                    <tr th:each="his : ${history}">
+                        <td th:text="${his.user_id}"></td>
+                        <td th:text="${his.history_date}"></td>
+                        <td th:text="${his.cost}"></td>
+                        <td th:text="${his.type}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br/>
+
+<div id='calendar'></div>
+</div>
+</body>
+</html>
