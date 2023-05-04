@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>보증금 결제</title>
+</head>
+<body>
+<h1>보증금 결제</h1>
+<form th:action="@{/payment/submit}" method="post">
+<!--    <input type="hidden" th:name="id" th:value="${apply.id}" />-->
+    <input type="hidden" th:name="applyId" th:value="${apply.id}"/>
+    <label for="applyId">applyId</label>
+    <span th:field="*{apply.id}" th:text="${apply.id}" id="applyId"></span></br></br>
+    <label for="cost">결제 금액</label>
+    <span th:field="*{post.postDeposit}" id="cost" th:text="${post.postDeposit} + '원'" ></span><br><br>
+
+    <label for="balance">현재잔액:</label>
+    <span th:field="*{member.deposit}" id="balance" th:text="${member.deposit} + '원'" ></span><br><br>
+    <label th:text="${member.deposit} - ${post.postDeposit}">결제후 잔액:</label></br></br>
+    <a href="/charge">보증금 충전</a>
+    <button type="submit" >보증금 결제</button>
+</form>
+
+
+</body>
+</html>

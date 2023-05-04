@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
+@Service
 public class PostService {
 
     private final PostRepository postRepository;
