@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 내역</title>
+</head>
+<body>
+<h1>결제 내역</h1>
+<form th:action="@{/historySubmit}" method="post">
+  <label for="type">결제 종류:</label>
+  <select name="type" id="type">
+    <option value="all" th:selected="${type == null || type == 'all'}">전체</option>
+    <option value="CHARGE" th:selected="${type == 'CHARGE'}">충전</option>
+    <option value="PAYMENT" th:selected="${type == 'PAYMENT'}">결제</option>
+    <option value="REFUND" th:selected="${type == 'REFUND'}">환불</option>
+  </select>
+  <button type="submit">조회</button>
+</form>
+<table>
+  <thead>
+  <tr>
+    <th>번호</th>
+    <th>결제일시</th>
+    <th>내역</th>
+    <th>금액</th>
+    <th>남은금액</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="history, i : ${historyList}">
+    <td th:text="${i.index + 1}"></td>
+    <td th:text="${#temporals.format(history.date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    <td th:text="${history.type}"></td>
+    <td th:text="${history.cost}"></td>
+    <td th:text="${history.balance}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
