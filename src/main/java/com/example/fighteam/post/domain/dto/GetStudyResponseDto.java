@@ -12,19 +12,25 @@ public class GetStudyResponseDto {
     private Date startDate;
     private Date endDate;
     private int deposit;
-    private String languageContent;
+    private int recruitmentperiod;
+    private List<String> languageContent;
+    private List<String> typeContent;
     private String title;
     private String content;
     private List<Comment> comment;
+    private Long user_id;
 
-    public GetStudyResponseDto(int memberCount, Date startDate, Date endDate, int deposit, String languageContent, String title, String content, List<Comment> comment) {
+    public GetStudyResponseDto(int memberCount, Date startDate, Date endDate, int deposit, int recruitmentperiod, List<String> languageContent, List<String> typeContent, String title, String content, List<Comment> comment, Long userId) {
         this.memberCount = memberCount;
         this.startDate = startDate;
         this.endDate = endDate;
         this.deposit = deposit;
+        this.recruitmentperiod = recruitmentperiod;
         this.languageContent = languageContent;
+        this.typeContent = typeContent;
         this.title = title;
         this.content = content;
         this.comment = comment;
+        user_id = userId;
     }
 }
