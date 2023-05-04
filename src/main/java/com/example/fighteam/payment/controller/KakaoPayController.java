@@ -52,8 +52,6 @@ public class KakaoPayController {
         System.out.println("readyResponse = " + requestPay);
         model.addAttribute("tid", requestPay.getTid());
 
-
-
         return requestPay; // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
     }
 
@@ -82,13 +80,13 @@ public class KakaoPayController {
     // 결제 취소시 실행 url
     @GetMapping("/charge/pay/cancel")
     public String payCancel() {
-        return "redirect:/hwang/member/charge/chargeForm2";
+        return "redirect:/charge";
     }
 
     // 결제 실패시 실행 url
     @GetMapping("/charge/pay/fail")
     public String payFail() {
-        return "redirect:/hwang/member/charge/chargeForm2";
+        return "redirect:/charge";
     }
 
 
