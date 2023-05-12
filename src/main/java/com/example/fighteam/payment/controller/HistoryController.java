@@ -17,6 +17,10 @@ import java.util.List;
 public class HistoryController {
 
     private final HistoryRepository historyRepository;
+    @GetMapping("/test")
+    public String test() {
+        return "hwang/member/payment/test/test";
+    }
 
     @GetMapping("/history")
     public String getHistory() {
