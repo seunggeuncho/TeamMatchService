@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function selectUser(user_id){
+            document.getElementById("user_id").value=user_id;
+            document.getElementsByName("review_q1").checked=false;
+            document.getElementById("review_form_container").style.display='flex';
+        }
+
+    </script>
+</head>
+<body>
+<div id="header" th:include="header"></div>
+    <div id="teammate_list_container">
+        <table>
+            <h2>팀원 리스트</h2>
+            <thead>
+            <th>아이디</th>
+            <th>직책</th>
+            <th>평점</th>
+            <th></th>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(applyList)}">
+            <tr th:each="apply : ${applyList}">
+                <td th:text="${apply.user_id}"></td>
+                <td th:if="${apply.apply_status == 'confirm'}">팀원</td>
+                <td th:else-if="${apply.apply_status == 'master'}">팀장</td>
+                <td th:else-if="${apply.apply_status == 'sub'}">부팀장</td>
+                <td th:text="${apply.score}"></td>
+                <td th:if="${not rvd_list.contains(apply.user_id)}"><input type="button" th:onclick="selectUser([[${apply.user_id}]])" value="리뷰 작성하기"/></td>
+                <td th:if="${rvd_list.contains(apply.user_id)}">작성완료</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="review_form_container" style="display:none">
+        <h2 id="form_title"></h2>
+        <form id="review_form">
+            <input type="hidden" id="user_id" name="user_id" value=""/>
+            <input type="hidden" id="teamspace_id" name="teamspace_id" th:value="${post_id}"/>
+            <p>적극적으로 참여하였나요?</p>
+            <input type="radio" name="review_q1" id="review_q1_1" value=""/>
+            <label for="review_q1_1">전혀 동의하지 않음</label>
+            <input type="radio" name="review_q1" id="review_q1_2" value=""/>
+            <label for="review_q1_2">동의하지 않음</label>
+            <input type="radio" name="review_q1" id="review_q1_3" value=""/>
+            <label for="review_q1_3">보통</label>
+            <input type="radio" name="review_q1" id="review_q1_4" value=""/>
+            <label for="review_q1_4">동의함</label>
+            <input type="radio" name="review_q1" id="review_q1_5" value=""/>
+            <label for="review_q1_5">매우 동의함</label>
+            <br>
+            <input type="submit" value="작성완료">
+        </form>
+    </div>
+</body>
+</html>

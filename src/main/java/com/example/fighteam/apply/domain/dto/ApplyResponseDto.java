@@ -1,17 +1,21 @@
 package com.example.fighteam.apply.domain.dto;
 
 import lombok.Getter;
-
-import java.util.List;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ApplyResponseDto {
 
-    private List<Integer> scores;
-    private List<String> email;
+    private int score;
+    private Long user_id;
+    private String apply_status;
+    private String email;
 
-    public ApplyResponseDto(List<Integer> scores, List<String> email) {
-        this.scores = scores;
+    public ApplyResponseDto(String email,int score, Long user_id, String apply_status) {
         this.email = email;
+        this.score = score;
+        this.user_id = user_id;
+        this.apply_status = apply_status;
     }
 }

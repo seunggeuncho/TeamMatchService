@@ -5,9 +5,11 @@ import com.example.fighteam.teamspace.domain.dto.AttendanceRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ public class TeamspaceRestController {
     @PostMapping("/AttendanceEvents")
     @ResponseBody
     public ResponseEntity<List<AttendanceResponseDto>> attendanceEvents(@RequestBody Map<String, Object> param){
-        Long teamspace_id = Long.valueOf(((Integer)param.get("teamspace_id")).longValue());
+        Long teamspace_id = Long.valueOf(param.get("teamspace_id").toString());
         String sql = "SELECT * FROM attendance WHERE teamspace_id = ?";
         List<AttendanceResponseDto> events = jdbcTemplate.query(sql, new Object[]{teamspace_id}, new AttendanceRowMapper());
         return  ResponseEntity.ok(events);
@@ -38,4 +40,39 @@ public class TeamspaceRestController {
         return ResponseEntity.ok(clickEvents);
     }
 
+    @PostMapping("/isMember")
+    @ResponseBody
+    public ResponseEntity<String> isMember(@RequestBody Map<String, Object> param){
+        Long teamspace_id = Long.valueOf(((Integer)param.get("teamspace_id")).longValue());
+        Long user_id = Long.valueOf(param.get("user_id").toString());
+        String sql = "select apply_status from apply where teamspace_id = ? and user_id = ?";
+        String apply_status = jdbcTemplate.queryForObject(sql, new Object[]{teamspace_id,user_id},String.class);
+        return ResponseEntity.ok(apply_status);
+    }
+    @PostMapping("/GetMembers")
+    @ResponseBody
+    public ResponseEntity<List<Long>> GetMembers(@RequestBody Map<String,Object> param){
+        Long teamspace_id = Long.valueOf(((Integer)param.get("teamspace_id")).longValue());
+        String sql = "select user_id from apply where teamspace_id = ? and apply_status is not null";
+        List<Long> members = jdbcTemplate.query(sql, new Object[]{teamspace_id}, new RowMapper<Long>() {
+            @Override
+            public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getLong("user_id");
+            }
+        });
+        return ResponseEntity.ok(members);
+    }
+    @GetMapping("/TeamspaceErrorManager")
+    @ResponseBody
+    public String TeamspaceErrorManager(@RequestParam("error_code") String error_code){
+        String url="";
+        if(error_code.equals("nl")){//need login
+            url = "<script>alert('로그인이 필요한 서비스입니다.');location.href='http://localhost:8080/testLogin';</script>";
+        }else if(error_code.equals("nm")){//not member
+            url = "<script>alert('해당 팀의 멤버가 아닙니다.');window.location.href='http://localhost:8080/testMain';</script>";
+        }else if(error_code.equals("nmst")){//not master
+            url = "<script>alert('해당 팀의 마스터권한이 필요한 서비스입니다.');window.location.href='http://localhost:8080/testMain';</script>";
+        }
+        return url;
+    }
 }
