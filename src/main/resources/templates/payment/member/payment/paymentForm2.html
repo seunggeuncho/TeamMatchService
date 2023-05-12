@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace="fragments/header :: header" >
+<head th:replace="fragments/htmlHeader" >
     <meta charset="UTF-8">
     <title>보증금 결제</title>
 </head>
@@ -10,6 +10,7 @@
     }
 </style>
 <body>
+<div th:replace="fragments/header :: header"></div>
 <div class="container-fluid">
 <!--    <div class="row flex-nowrap">-->
 <!--        <div th:insert="fragments/mypageSide :: sidebar" class="col-3 bd-sidebar"/>-->
@@ -34,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label for="cost">결제 금액</label>
-                <span th:field="*{post.postDeposit}" id="cost" th:text="${post.postDeposit} + '원'" ></span><br><br>
+                <span th:field="*{post.deposit}" id="cost" th:text="${post.deposit} + '원'" ></span><br><br>
             </div>
             <div class="form-group">
                 <label for="balance">현재잔액:</label>
@@ -42,7 +43,7 @@
             </div>
             <div class="form-group">
                 <label>결제후 잔액:</label>
-                <span  th:text="${member.deposit} - ${post.postDeposit}"></span></br></br>
+                <span  th:text="${member.deposit} - ${post.deposit}"></span></br></br>
             </div>
             <button type="submit" class="btn btn-danger" formaction="/charge">보증금 충전</button>
             <button type="submit" class="btn btn-danger" >보증금 결제</button>

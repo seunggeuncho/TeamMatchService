@@ -10,11 +10,11 @@ import java.util.List;
 
 
 
-public class Post implements PostRepository {
+public class PostJdbc implements PostRepository {
 
     private final DataSource dataSource;
 
-    public Post(DataSource dataSource) {
+    public PostJdbc(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

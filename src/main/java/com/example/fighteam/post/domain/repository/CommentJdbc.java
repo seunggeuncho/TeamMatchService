@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Comment implements  CommentRepository{
+public class CommentJdbc implements  CommentRepository{
     private final  DataSource dataSource;
 
-    public Comment(DataSource dataSource){this.dataSource =dataSource;}
+    public CommentJdbc(DataSource dataSource){this.dataSource =dataSource;}
 
     private Connection conn;
     private PreparedStatement pstmt;
@@ -24,13 +24,22 @@ public class Comment implements  CommentRepository{
     @Override
     public Long saveComment(CreateCommentDto createCommentDto) {
         String sql = "insert into comment(user_id, post_id, comment_content) values(?,?,?)";
+        Long result = null;
+
         try {
             conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
             pstmt.setLong(1, createCommentDto.getUser_id());
             pstmt.setLong(2, createCommentDto.getPost_id());
             pstmt.setString(3, createCommentDto.getComment());
-            int row = pstmt.executeUpdate();
+            pstmt.executeUpdate();
+            rs = pstmt.getGeneratedKeys();
+            if(rs.next()){
+                result = rs.getLong(1);
+            }else{
+                throw new SQLException("댓글 생성 실패");
+            }
         }catch(Exception e){
             e.printStackTrace();
         }finally {

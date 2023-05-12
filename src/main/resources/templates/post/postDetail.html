@@ -31,14 +31,18 @@ function closeModal() {
     document.getElementById("modal").style.display = "none";
 }
 function openPopup(url, name, width, height) {
-    // 팝업 창의 위치를 브라우저 가운데로 조정하기 위한 코드
-    var left = (window.screen.width / 2) - (width / 2);
-    var top = (window.screen.height / 2) - (height / 2);
+  // 팝업 창의 위치를 브라우저 가운데로 조정하기 위한 코드
+  var left = (window.screen.width / 2) - (width / 2);
+  var top = (window.screen.height / 2) - (height / 2);
 
-    // 새로운 창 열기
-    window.open(url, name, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
+  // 새로운 창 열기
+  var popup = window.open('', name, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
+  document.getElementById("paymentForm").target = name;
+  document.getElementById("paymentForm").submit();
+
+  // 새로 열린 창에 POST 요청 결과 보여주기
+  popup.location.href = url;
 }
-
   </script>
   <style>
         #modal {
@@ -60,12 +64,12 @@ function openPopup(url, name, width, height) {
 
 </head>
 <body>
-<div th:replace="~{post/fragment/header :: header}">
+<div th:replace="fragments/header :: header">
 
 </div>
 <!--프로젝트 기본사항-->
 <div class="container position-relative">
-  <th:block th:if ="${session.userId == board.user_id}">
+  <th:block th:if ="${session.loginId == board.user_id}">
     <div class="form-row float-right">
       <a class="text-decoration-none link-dark" href="#" onclick="removepost()">삭제</a>
       <p>&nbsp;|&nbsp;</p>
@@ -133,7 +137,7 @@ function openPopup(url, name, width, height) {
   <br>
 
   <!-- 댓글 입력란-->
-  <th:block th:if ="${session.userId != null}">
+  <th:block th:if ="${session.loginId != null}">
     <div>
       <br>
       <textarea class="form-control" id="comment" rows="3" placeholder="댓글을 입력하세요."></textarea>
@@ -153,7 +157,7 @@ function openPopup(url, name, width, height) {
       <div class='reply-group'>
         <strong class='left' th:text = "${comment.user_id}"></strong>&nbsp;
         <small class='left' th:text = "${comment.commentCreatedTime}"></small>&nbsp;
-        <th:block th:if ="${session.userId != null and session.userId.equals(comment.user_id)}">
+        <th:block th:if ="${session.loginId != null and session.login.equals(comment.user_id)}">
         <a href='#' class='right text-decoration-none link-dark' th:onclick='commentUpdate([[${comment.comment_id}]],[[${comment.comment}]])'><span class='bi bi-pencil'></span>수정</a>&nbsp;
         <a href='#' class='right text-decoration-none link-dark'  th:onclick='commentRemove([[${comment.comment_id}]])'><span class="bi bi-trash"></span>삭제</a>
         </th:block>
@@ -198,9 +202,9 @@ function openPopup(url, name, width, height) {
         </div>
         <div class="modal-footer">
           <button type="button" onclick="closeModal()" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-          <form>
-            <input type="hidden" name="post_id" id="hidden_post_id" value="${post_id}"/>
-            <button action="/payment" type="submit" name="submit" onclick="openPopup('/payment', 'payment', 1500, 1000); return false;" class="btn btn-primary" >보증금 결제</button>
+          <form method="post" action="/payment" target="popup" id="paymentForm">
+            <input type="hidden" name="post_id" th:value="${board.post_id}"/>
+            <button type="submit" name="submit" class="btn btn-primary" onclick="openPopup('/payment', 'payment', 1500, 1000); return false;" >보증금 결제</button>
           </form>
         </div>
       </div>
@@ -298,7 +302,7 @@ function removepost(){
     return;
     }
     const post_id = [[${board.post_id}]];
-    const user_id = [[${session.userId}]];
+    const user_id = [[${session.loginId}]];
     $.ajax({
         type:"post",
         url: "/comment/save",
@@ -346,7 +350,7 @@ function removepost(){
   }
  function commentRemove(comment_id){
     const post_id = [[${board.post_id}]];
-    const user_id = [[${session.userId}]];
+    const user_id = [[${session.loginId}]];
     if (confirm("정말 삭제하시겠습니까?") == true){
      $.ajax({
         type:"post",
@@ -407,7 +411,7 @@ function updateReply(){
   const comment = $("#replyModalComment").val();
   const comment_id = $("#modalComment_id").val();
   const post_id = [[${board.post_id}]];
-  const user_id = [[${session.userId}]];
+  const user_id = [[${session.loginId}]];
     $.ajax({
         type:"post",
         url: "/comment/update",

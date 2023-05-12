@@ -1,6 +1,8 @@
 package com.example.fighteam.payment.domain;
 
 
+import com.example.fighteam.post.domain.Post;
+import com.example.fighteam.user.domain.repository.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +17,8 @@ public class Apply {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -34,8 +36,8 @@ public class Apply {
     public Apply() {
     }
 
-    public Apply(Member member, Post post, int userDeposit, Boolean status) {
-        this.member = member;
+    public Apply(User user, Post post, int userDeposit, Boolean status) {
+        this.user = user;
         this.post = post;
         this.userDeposit = userDeposit;
         this.status = status;

@@ -17,12 +17,12 @@ public class HistoryRepository {
 
     public List<History> findByMemberId(Long id, String type) {
         if (type.equals("all")) {
-            return em.createQuery("select h from History h where h.member.id =: id", History.class)
+            return em.createQuery("select h from History h where h.user.id =: id", History.class)
                     .setParameter("id", id)
                     .getResultList();
 
         } else {
-            return em.createQuery("select h from History  h where h.member.id =: id and h.type =:type", History.class)
+            return em.createQuery("select h from History  h where h.user.id =: id and h.type =:type", History.class)
                     .setParameter("id", id)
                     .setParameter("type", HistoryType.valueOf(type))
                     .getResultList();

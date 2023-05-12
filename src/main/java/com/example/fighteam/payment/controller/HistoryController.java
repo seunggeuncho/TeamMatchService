@@ -19,14 +19,14 @@ public class HistoryController {
     private final HistoryRepository historyRepository;
     @GetMapping("/test")
     public String test() {
-        return "hwang/member/payment/test/test";
+        return "payment/member/payment/test/test";
     }
 
     @GetMapping("/history")
     public String getHistory() {
 
 
-        return "hwang/history/historyList";
+        return "history/historyList";
     }
 
     @PostMapping("/historySubmit")
@@ -42,6 +42,6 @@ public class HistoryController {
 //            System.out.println("history.getBalance() = " + history.getBalance());
 //        }
         model.addAttribute("historyList", findHistory);
-        return "hwang/history/historyList";
+        return "history/historyList";
     }
 }

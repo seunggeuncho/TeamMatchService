@@ -1,11 +1,12 @@
 package com.example.fighteam.payment.controller;
 
-import com.example.fighteam.payment.domain.Member;
-import com.example.fighteam.payment.domain.Post;
-import com.example.fighteam.payment.repository.MemberRepository;
-import com.example.fighteam.payment.repository.PostRepository;
-import com.example.fighteam.payment.service.MemberService;
+import com.example.fighteam.post.domain.Post;
+import com.example.fighteam.payment.repository.PostRepositoryJpa;
+
+import com.example.fighteam.payment.service.ChargeService;
 import com.example.fighteam.payment.service.PaymentService;
+import com.example.fighteam.user.domain.repository.User;
+import com.example.fighteam.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PostRepository postRepository;
+    private final PostRepositoryJpa postRepository;
     private final PaymentService paymentService;
-    private final MemberService memberService;
-    private final MemberRepository memberRepository;
+    private final UserService userService;
+    private final ChargeService chargeService;
 
     @PostMapping("/payment")
     public String payment(@RequestParam("post_id") Long postId, HttpSession session, Model model) {
@@ -34,13 +35,15 @@ public class PaymentController {
         // apply가 아니라 post를 받아와야함
 //        Apply findApply = applyRepository.findByMemberWithPost(id);
 
+//        Post findPost = postRepository.findById(postId).orElse(null);
+
         Post findPost = postRepository.findById(postId).orElse(null);
 //        System.out.println("findPost.getId() = " + findPost.getId());
         model.addAttribute("post", findPost);
-        model.addAttribute("member", memberRepository.findMember(id));
+        model.addAttribute("member", userService.findUser(id));
 
 
-        return "hwang/member/payment/paymentForm2";
+        return "payment/member/payment/paymentForm2";
     }
 
     @PostMapping("payment/submit")
@@ -60,11 +63,11 @@ public class PaymentController {
 
     @GetMapping("payment/success")
     public String paymentResult(HttpSession session, Model model) {
-        Long memberId = (Long) session.getAttribute("loginId");
-        Member member = memberRepository.findMember(memberId);
-        model.addAttribute("payment", member.getDeposit());
+        Long userId = (Long) session.getAttribute("loginId");
+        User user = userService.findUser(userId);
+        model.addAttribute("payment", user.getDeposit());
 
-        return "hwang/member/payment/paymentResult";
+        return "payment/member/payment/paymentResult";
 
     }
 }

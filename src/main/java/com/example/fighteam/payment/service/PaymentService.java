@@ -3,8 +3,10 @@ package com.example.fighteam.payment.service;
 import com.example.fighteam.payment.domain.*;
 import com.example.fighteam.payment.repository.ApplyRepository;
 import com.example.fighteam.payment.repository.HistoryRepository;
-import com.example.fighteam.payment.repository.MemberRepository;
-import com.example.fighteam.payment.repository.PostRepository;
+import com.example.fighteam.payment.repository.PostRepositoryJpa;
+import com.example.fighteam.post.domain.Post;
+import com.example.fighteam.user.domain.repository.User;
+import com.example.fighteam.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,21 +25,21 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class PaymentService {
-    private final MemberRepository memberRepository;
     private final HistoryRepository historyRepository;
     private final ApplyRepository applyRepository;
-    private final PostRepository postRepository;
+    private final PostRepositoryJpa postRepositoryJpa;
+    private final UserService userService;
 
     @Transactional
     public int payment(Long postId, Long memberId) { // 보증금 결제
 
 
-        Post post = postRepository.findById(postId).orElse(null);
-        Member member = memberRepository.findMember(memberId);
+        Post post = postRepositoryJpa.findById(postId).orElse(null);
+        User member = userService.findUser(memberId);
 
         //Apply 생성
-        Apply apply = new Apply(member, post, post.getPostDeposit(), false);
-        int cost = post.getPostDeposit();
+        Apply apply = new Apply(member, post, post.getDeposit(), false);
+        int cost = post.getDeposit();
         //0원 보다 작으면 에러 발생
         member.minusDeposit(cost);
         apply.plusUserDeposit(cost);

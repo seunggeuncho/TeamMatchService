@@ -1,5 +1,6 @@
 package com.example.fighteam.payment.domain;
 
+import com.example.fighteam.user.domain.repository.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +17,8 @@ public class History {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apply_id")
@@ -48,14 +49,14 @@ public class History {
     public History() {}
 
 
-    public History(Member member, Apply apply, HistoryType type, int cost, int balance) {
+    public History(User member, Apply apply, HistoryType type, int cost, int balance) {
         this(member, type, cost, balance);
         this.apply = apply;
 
     }
 
-    public History(Member member,  HistoryType type, int cost,  int balance) {
-        this.member = member;
+    public History(User member,  HistoryType type, int cost,  int balance) {
+        this.user = member;
         this.type = type;
         this.cost = cost;
         this.balance = balance;

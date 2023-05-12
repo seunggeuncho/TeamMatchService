@@ -18,28 +18,26 @@ public class UserController {
     public final UserService userService;
 
 
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public String mainForm(){
         return "joinlogin/main";
     }
 
-    @GetMapping("/join")
+    @GetMapping("/user/join")
     public String createUserForm(){
         return "joinlogin/join";
     }
 
     //회원가입
-    @RequestMapping(value = "/join",method = RequestMethod.POST)
+    @RequestMapping(value = "/user/join",method = RequestMethod.POST)
     public String joinUs(User user){
-
         userService.signUp(user);
-        return "joinlogin/main";
+        return "post/home";
     }
 
     //로그인
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    @RequestMapping(value = "/user/login",method = RequestMethod.POST)
     public String login(User member, Model model, HttpSession session ){
-        System.out.println("user = " + member);           //콘솔창 값 확인
         User user = userService.loginUser(member.getEmail(), member.getPasswd());
 
         // 아이디 비밀번호 불일치
@@ -48,12 +46,13 @@ public class UserController {
             return "joinlogin/main";
         }
 
-        session.setAttribute("loginId", member.getId());        //세션에 아이디를 저장함.
+        session.setAttribute("loginId", user.getId());        //세션에 아이디를 저장함.
         //로그인한 유저가 누군지 확인가능
 
         model.addAttribute("name", user.getName()); //로그인성공시 임시페이지 ex) ㅇㅇㅇ님 환영합니다
-        return "joinlogin/loginsuccess";
+        return "post/home";
     }
+
 
 
 

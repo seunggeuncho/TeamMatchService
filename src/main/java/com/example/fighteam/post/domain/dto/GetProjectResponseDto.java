@@ -1,6 +1,6 @@
 package com.example.fighteam.post.domain.dto;
 
-import com.example.fighteam.post.domain.repository.Comment;
+import com.example.fighteam.post.domain.repository.CommentJdbc;
 import lombok.Getter;
 
 import java.util.Date;
@@ -16,9 +16,9 @@ public class GetProjectResponseDto {
     private List<String> languageContent;
     private String title;
     private String content;
-    private List<Comment> comment;
+    private List<CommentJdbc> comment;
 
-    public GetProjectResponseDto(int memberCount, Date startDate, Date endDate, int deposit, List<String> typeContent, List<String> languageContent, String title, String content, List<Comment> comment) {
+    public GetProjectResponseDto(int memberCount, Date startDate, Date endDate, int deposit, List<String> typeContent, List<String> languageContent, String title, String content, List<CommentJdbc> comment) {
         this.memberCount = memberCount;
         this.startDate = startDate;
         this.endDate = endDate;
