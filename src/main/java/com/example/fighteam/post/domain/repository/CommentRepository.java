@@ -9,4 +9,8 @@ public interface CommentRepository {
     Long saveComment(CreateCommentDto createCommentDto);
 
     List<GetCommentDto> findbyPostid(Long Post_id);
+
+    Boolean removeComment(Long commentId);
+
+    Boolean updateComment(Long commentId, String comment);
 }

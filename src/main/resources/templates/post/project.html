@@ -3,48 +3,31 @@
 <head>
   <title>프로젝트 게시판</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" type="text/css" href="/postcss/home.css">
-  <link rel="stylesheet" type="text/css" href="/postcss/study_project.css">
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
 </head>
 <body>
+<div th:replace="~{post/fragment/header :: header}">
 
-<div class="topnav">
-  <div>
-    <a href="/post/home" id="navs" class="left">Fighteam</a>
-    <a href="/post/study" id="navs" class="left">Study</a>
-    <a href="/post/project" id="navs" class="left">Project</a>
-  </div>
-
-  <th:block th:if ="${session.user_id == null}">
-    <div>
-      <a href="/user/login" id="navs" class="right">Login/Sign up</a>
-      <a href="/post/createpost" id="navs" class="right">Write new Board</a>
-    </div>
-  </th:block>
-  <th:block th:if ="${session.user_id != null}">
-    <div>
-      <a href="/user/logout" id="navs" class="right">Logout</a>
-      <a href="/post/createpost" id="navs" class="right">Write new Board</a>
-      <a href="/mypage" id="navs" class="right">MyPage</a>
-    </div>
-  </th:block>
 </div>
-
 <div id="main" style="font-size:large; text-align: center; ">
 
   <div id="search" style="height: 150px;padding: 15px; font-size: small">
     <h3>[ 프로젝트 ]</h3>
-    <form name="coffeeV1" autocomplete="on" action="/coffeeV1">
+    <form method="get" autocomplete="on" action="/post/project">
       <fieldset>
         <select class="selectpicker" name = "language">
+          <option value="total">전체</option>
           <optgroup label="프론트엔드">
             <option value="javascript">JavaScript</option>
             <option value="typescript">TypeScript</option>
@@ -69,43 +52,18 @@
     </form>
   </div>
 
-  <table class="table">
-    <thead class="table-dark">
-    <tr class="tr_td">
-      <th>분류</th>
-      <th>프로젝트명</th>
-      <th>게시자</th>
-      <th>모집 분야</th>
-      <th>모집 언어</th>
-      <th>마감일</th>
-      <th>모집 인원</th>
-      <th>보증금</th>
-    </tr>
-    </thead>
+  <div th:replace="~{post/fragment/table :: table}">
 
-
-    <tbody id="t_body">
-    <tr id="t_body_lst" th:each="board: ${boardList}">
-      <td th:text="${board.subject}"></td>
-      <td><a th:href="@{|/post/res/${board.post_id}|}" th:text="${board.title}"></a></td>
-      <td th:text="${board.user_id}"></td>
-      <td th:text="${board.typeContent}"></td>
-      <td th:text="${board.languageContent}">d</td>
-      <td th:text="${board.enddate}"></td>
-      <td th:text="${board.count}"></td>
-      <td th:text="${board.deposit}"></td>
-    </tr>
-    </tbody>
-  </table>
+  </div>
 </div>
 
 
 <ul class="pagination" style="justify-content : center">
-  <li class="paginate_button page-item previous" th:classappend="${list.startPage < 6}? disabled"><a th:href="@{|/post/project?currentPage=${list.startPage-5}|}" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
+  <li class="paginate_button page-item previous" th:classappend="${list.startPage < 6}? disabled"><a th:href="@{|/post/project?currentPage=${list.startPage-5}&language=${language}|}" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
   <th:block th:each="pNo: ${#numbers.sequence(list.startPage, list.endPage)}">
-    <li class="paginate_button page-item" th:classappend="${param.currentPage == pNo} ? active"><a th:href="@{|/post/project?currentPage=${pNo}|}" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link" th:text="${pNo}"></a></li>
+    <li class="paginate_button page-item" th:classappend="${param.currentPage == pNo} ? active"><a th:href="@{|/post/project?currentPage=${pNo}&language=${language}|}" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link" th:text="${pNo}"></a></li>
   </th:block>
-  <li class="paginate_button page-item next" th:classappend="${list.endPage >= list.totalPages} ? disabled"><a th:href="@{|/post/project?currentPage=${list.startPage+5}|}" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li>
+  <li class="paginate_button page-item next" th:classappend="${list.endPage >= list.totalPages} ? disabled"><a th:href="@{|/post/project?currentPage=${list.startPage+5}&language=${language}|}" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li>
 </ul>
 
 <div class="footer">

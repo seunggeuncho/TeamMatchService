@@ -6,37 +6,6 @@ body {
     margin: 0;
 }
 
-/* Style the header */
-.header {
-    background-color: #f1f1f1;
-    padding: 20px;
-    text-align: center;
-}
-
-/* Style the top navigation bar */
-.topnav {
-    overflow: hidden;
-    background-color: #333;
-}
-
-/* Style the topnav links */
-#navs {
-
-    display: block;
-    color: white;
-    background-color: #333;
-    text-align: center;
-    padding: 20px 50px;
-    text-decoration: none;
-    border: none;
-}
-
-.left{
-    float:left;
-}
-.right{
-    float:right;
-}
 /* Change color on hover */
  #navs:hover {
     background-color: #ddd;

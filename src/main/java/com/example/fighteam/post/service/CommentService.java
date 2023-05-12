@@ -25,4 +25,16 @@ public class CommentService {
         getCommentDto = commentRepository.findbyPostid(post_id);
         return getCommentDto;
     }
+
+    public Boolean removeComment(Long commentId) {
+        Boolean rs;
+        rs = commentRepository.removeComment(commentId);
+        return rs;
+    }
+
+    public Boolean updateComment(Long commentId, String comment) {
+        Boolean rs;
+        rs = commentRepository.updateComment(commentId, comment);
+        return rs;
+    }
 }

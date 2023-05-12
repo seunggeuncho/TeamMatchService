@@ -1,20 +1,23 @@
-table {
-    width: 90%;
-    border-top: 1px solid #444444;
-    border-collapse: collapse;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-}
-tr,th,td {
-    border-bottom: 1px solid #444444;
-    padding: 10px;
-}
-
-tbody {font-size: small}
-
-#t_body_lst:hover {background-color: #D6EEEE;}
-
 label{
     padding: 10px;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.ml-5 {
+  margin-left: ($spacer * 10) !important;
+}
+
+#upper {
+    text-align: center;
+}
+.col{
+    padding-left:0px;
+}
+
+#main{
+    margin-left:250px;
+}
+h1{
+    font-weight: bold;
 }
