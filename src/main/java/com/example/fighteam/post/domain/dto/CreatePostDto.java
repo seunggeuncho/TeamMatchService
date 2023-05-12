@@ -26,7 +26,7 @@ public class CreatePostDto {
     private String content;
     private Long user_id;
     private String subject;
-    private Boolean complete; //스터디 or 프로젝트
+    private String complete; //스터디 or 프로젝트
 
 
 }

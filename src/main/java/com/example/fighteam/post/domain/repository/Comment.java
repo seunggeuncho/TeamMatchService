@@ -67,6 +67,51 @@ public class Comment implements  CommentRepository{
         return getCommentDto;
     }
 
+    @Override
+    public Boolean removeComment(Long commentId) {
+        Boolean result = false;
+        int row = 0;
+        String sql = "delete from comment where comment_id = ?";
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1,commentId);
+            row = pstmt.executeUpdate();
+            if (row > 0){
+                result = true;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Boolean updateComment(Long commentId, String comment) {
+        Boolean result = false;
+        int row = 0;
+        String sql = "update comment set comment_content = ? where comment_id = ?";
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,comment);
+            pstmt.setLong(2,commentId);
+            row = pstmt.executeUpdate();
+            if (row > 0){
+                result = true;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+
+        return result;
+    }
+
     private Connection getConnection(){
         return DataSourceUtils.getConnection(dataSource);
     }

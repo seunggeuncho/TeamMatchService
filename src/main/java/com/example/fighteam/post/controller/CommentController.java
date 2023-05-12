@@ -33,4 +33,31 @@ public class CommentController {
             return new ResponseEntity<>("해당 게시글은 존재하지 않습니다.", HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/remove")
+    public ResponseEntity remove(Long comment_id, Long post_id){
+        Boolean result;
+        result = commentService.removeComment(comment_id);
+        if (result){
+            List<GetCommentDto> getCommentDto;
+            getCommentDto = commentService.getComment(post_id);
+            return new ResponseEntity<>(getCommentDto, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("삭제를 실패하였습니다.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity update(Long comment_id, Long post_id, String comment){
+        Boolean result;
+        result = commentService.updateComment(comment_id, comment);
+        if (result){
+            List<GetCommentDto> getCommentDto;
+            getCommentDto = commentService.getComment(post_id);
+            return new ResponseEntity<>(getCommentDto, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("수정을 실패하였습니다.", HttpStatus.NOT_FOUND);
+        }
+
+    }
 }

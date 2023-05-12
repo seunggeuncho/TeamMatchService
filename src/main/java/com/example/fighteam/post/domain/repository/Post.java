@@ -40,7 +40,7 @@ public class Post implements PostRepository {
             pstmt.setInt(6, createPostDto.getRecruitdate());
             pstmt.setInt(7, createPostDto.getDeposit());
             pstmt.setInt(8, createPostDto.getCount());
-            pstmt.setBoolean(9, createPostDto.getComplete());
+            pstmt.setString(9, createPostDto.getComplete());
             pstmt.setString(10, createPostDto.getSubject());
             pstmt.executeUpdate();
             rs = pstmt.getGeneratedKeys();
@@ -58,24 +58,131 @@ public class Post implements PostRepository {
     }
 
     @Override
-    public Boolean removepost(DeleteProjectRequestDto deleteProjectRequestDto) {
-        return null;
+    public Boolean removepost(Long post_id)
+    {
+        boolean result = false;
+        String sql = "delete from post_table where post_id = ?";
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, post_id);
+            int res = pstmt.executeUpdate();
+            if(res > 0){
+                result = true;
+            }else{
+                throw new SQLException("프로젝트 생성 실패");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+        return result;
+    }
+    @Override
+    public void removelanguage(Long postId) {
+
+        String sql = "delete from post_language where post_id = ?";
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, postId);
+            int res = pstmt.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
     }
 
     @Override
-    public CreatePostDto chooseproject(Long post_id) {
-        return null;
+    public void removetype(Long postId) {
+
+        String sql = "delete from post_type where post_id = ?";
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, postId);
+            int res = pstmt.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
     }
 
     @Override
-    public CreatePostDto changeproject(CreatePostDto createPostDto) {
-        return null;
+    public void removecomment(Long postId) {
+        String sql = "delete from comment where post_id = ?";
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, postId);
+            int res = pstmt.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+    }
+    @Override
+    public void updatepost(CreatePostDto createPostDto, Long id) {
+        String sql = "update post_table set title = ?, content = ?, startdate = ?, enddate=?, recruitdate=?," +
+                "deposit=?, count=?, subject=? where post_id = ?";
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, createPostDto.getTitle());
+            pstmt.setString(2, createPostDto.getContent());
+            pstmt.setDate(3,new java.sql.Date(createPostDto.getStartdate().getTime()));
+            pstmt.setDate(4, new java.sql.Date(createPostDto.getEnddate().getTime()));
+            pstmt.setInt(5, createPostDto.getRecruitdate());
+            pstmt.setInt(6, createPostDto.getDeposit());
+            pstmt.setInt(7,createPostDto.getCount());
+            pstmt.setString(8,createPostDto.getSubject());
+            pstmt.setLong(9, id);
+            int res = pstmt.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
     }
 
     @Override
-    public Boolean checkUser(Long user_id, Long post_id) {
-        return null;
+    public List<GetBoardResponseDto> findPostByUserID(Long id) {
+        String sql = "select * from post_table where user_id = ?";
+        List<GetBoardResponseDto> g = new ArrayList<>();
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1,id);
+            rs = pstmt.executeQuery();
+            while (rs.next()){
+                GetBoardResponseDto getBoardResponseDto = new GetBoardResponseDto();
+                getBoardResponseDto.setTitle(rs.getString("title"));
+                getBoardResponseDto.setUser_id(rs.getLong("user_id"));
+                getBoardResponseDto.setPost_id(rs.getLong("post_id"));
+                getBoardResponseDto.setEnddate(rs.getDate("enddate"));
+                getBoardResponseDto.setCount(rs.getInt("count"));
+                getBoardResponseDto.setSubject(rs.getString("subject"));
+                getBoardResponseDto.setDeposit(rs.getInt("deposit"));
+                getBoardResponseDto.setLanguageContent("");
+                getBoardResponseDto.setTypeContent("");
+                g.add(getBoardResponseDto);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+        return g;
     }
+
 
     @Override
     public Boolean insertlanguage(Long post_id, String language) {
@@ -126,17 +233,17 @@ public class Post implements PostRepository {
         if (topic.equals("study")){
             sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM ("
                     +" SELECT ROWNUM NUM, N.* FROM ("+
-                    "SELECT *FROM post_table where subject = 'study' ORDER BY date  DESC) N) "
+                    "SELECT *FROM post_table where subject = 'study' and complete = '0' ORDER BY date  DESC) N) "
                     +"WHERE NUM BETWEEN ? AND ?";
         }else if(topic.equals("project")){
             sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM ("
                     +" SELECT ROWNUM NUM, N.* FROM ("+
-                    "SELECT *FROM post_table where subject = 'project' ORDER BY date  DESC) N) "
+                    "SELECT *FROM post_table where subject = 'project' and complete = '0' ORDER BY date  DESC) N) "
                     +"WHERE NUM BETWEEN ? AND ?";
         } else{
             sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM ("
                    +" SELECT ROWNUM NUM, N.* FROM ("+
-                            "SELECT *FROM post_table ORDER BY date  DESC) N) "
+                            "SELECT *FROM post_table where complete = '0' ORDER BY date  DESC) N) "
             +"WHERE NUM BETWEEN ? AND ?";
         }
         List<GetBoardResponseDto> getBoardResponseDto = new ArrayList<>();
@@ -265,6 +372,100 @@ public class Post implements PostRepository {
         }
         return num;
     }
+
+    @Override
+    public List<GetBoardResponseDto> findAllBoardByLanguage(String topic, int page, int count, String language) {
+        int start = page * count -(count -1);
+        int end = page * count;
+        String sql;
+        if (topic.equals("study")){
+            sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
+                    " deposit, date, language_content, rownum num from (select language_content, " +
+                    "post_id from (select p.post_id post_id ,language_id from post_table p inner " +
+                    "join post_language l on p.post_id = l.post_id order by date desc) a  inner join language l " +
+                    "on a.language_id = l.language_id) s inner join post_table p on s.post_id = p.post_id" +
+                    " where complete='0' and language_content = ? and subject = 'study') where num between ? and ?";
+        } else if(topic.equals("project")){
+            sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
+                    " deposit, date, language_content, rownum num from (select language_content, " +
+                    "post_id from (select p.post_id post_id ,language_id from post_table p inner " +
+                    "join post_language l on p.post_id = l.post_id  order by date desc) a inner join language l " +
+                    "on a.language_id = l.language_id) s inner join post_table p on s.post_id = p.post_id" +
+                    " where complete='0' and language_content = ? and subject = 'project') where num between ? and ?";
+        } else{
+            sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
+                    " deposit, date, language_content, rownum num from (select language_content, " +
+                    "post_id from (select p.post_id post_id ,language_id from post_table p inner " +
+                    "join post_language l on p.post_id = l.post_id order by date desc) a inner join language l " +
+                    "on a.language_id = l.language_id) s inner join post_table p on s.post_id = p.post_id" +
+                    " where complete='0' and language_content = ?) where num between ? and ?";
+        }
+        List<GetBoardResponseDto> getBoardResponseDto = new ArrayList<>();
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,language);
+            pstmt.setInt(2,start);
+            pstmt.setInt(3,end);
+            rs = pstmt.executeQuery();
+            while(rs.next()){
+                GetBoardResponseDto g = new GetBoardResponseDto();
+                g.setTitle(rs.getString("title"));
+                g.setUser_id(rs.getLong("user_id"));
+                g.setPost_id(rs.getLong("post_id"));
+                g.setEnddate(rs.getDate("enddate"));
+                g.setCount(rs.getInt("count"));
+                g.setSubject(rs.getString("subject"));
+                g.setDeposit(rs.getInt("deposit"));
+                g.setLanguageContent("");
+                g.setTypeContent("");
+                getBoardResponseDto.add(g);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+        return getBoardResponseDto;
+    }
+
+    @Override
+    public int countboardByLanguage(String topic, String language) {
+        String sql;
+        int row = 0;
+        if (topic.equals("study")) {
+            sql = "select count(*) count from (select language_content, post_id from " +
+                    "(select p.post_id post_id ,language_id from post_table p inner join post_language l" +
+                    " on p.post_id = l.post_id) a  inner join language l on a.language_id = l.language_id)" +
+                    " s inner join post_table p on s.post_id = p.post_id where complete='0' and language_content = ? and subject = 'study'";
+        }else if(topic.equals("project")){
+            sql = "select count(*) count from (select language_content, post_id from " +
+                    "(select p.post_id post_id ,language_id from post_table p inner join post_language l" +
+                    " on p.post_id = l.post_id) a  inner join language l on a.language_id = l.language_id)" +
+                    " s inner join post_table p on s.post_id = p.post_id where complete='0' and language_content = ? and subject = 'project'";
+        }else{
+            sql = "select count(*) count from (select language_content, post_id from " +
+                    "(select p.post_id post_id ,language_id from post_table p inner join post_language l" +
+                    " on p.post_id = l.post_id) a  inner join language l on a.language_id = l.language_id)" +
+                    " s inner join post_table p on s.post_id = p.post_id where complete='0' and language_content = ?";
+        }
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,language);
+            rs = pstmt.executeQuery();
+            if (rs.next()){
+              row = rs.getInt("count");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+        return row;
+    }
+
+
 
     private Connection getConnection(){
         return DataSourceUtils.getConnection(dataSource);
