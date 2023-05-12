@@ -1,9 +1,6 @@
 package com.example.fighteam.chat.controller;
 
-import com.example.fighteam.chat.domain.dto.ChatMessageResponseDto;
-import com.example.fighteam.chat.domain.repository.ChatMessageRepository;
 import com.example.fighteam.chat.domain.repository.ChatRoom;
-import com.example.fighteam.chat.domain.repository.ChatRoomRepository;
 import com.example.fighteam.chat.service.ChatRoomService;
 import com.example.fighteam.user.domain.repository.User;
 import com.example.fighteam.user.domain.repository.UserRepository;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 /**
  * @author : 김효준
@@ -60,7 +56,4 @@ public class ChatController {
             return "/";
         }
     }
-
-    //message내용 가져오기
-
 }

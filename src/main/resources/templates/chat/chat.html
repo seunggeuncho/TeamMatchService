@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>Websocket ChatRoom</title>
     <meta charset="utf-8">
@@ -11,7 +11,15 @@
             display: none;
         }
     </style>
+    <th:block th:replace="chat/header :: header"></th:block>
 </head>
+
+
+<!--<head th:replace="fragments/header :: header" >-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>보증금 충전</title>-->
+
+<!--</head>-->
 <body>
 <div class="container" id="app" v-cloak>
     <ul class="list-group" style="height: 80vh; overflow-y: auto; word-wrap: break-word; word-break: break-all">
