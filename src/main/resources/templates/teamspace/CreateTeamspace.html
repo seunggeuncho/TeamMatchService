@@ -79,7 +79,7 @@
   </style>
 </head>
 <body>
-<div id="header" th:include="header"></div>
+<div id="header" th:include="/teamspace/header"></div>
 <div id="applier_container">
   <input type="hidden" th:value="${post_id}" id="hidden_post_id"/>
 <h2>신청자 리스트</h2>
@@ -97,7 +97,7 @@
           <td th:text="${apply.score}"></td>
           <td><input type="button" class="btn btn-secondary" value="채팅하기"></td><!--채팅페이지로 넘어가는 기능 추가할것-->
           <td><input type="button" class="btn btn-primary" th:onclick="openModal2([[${apply.user_id}]],[[${post_id}]],'accept' )" value="수락"/></td>
-          <td><input type="button" class="btn btn-danger" th:onclick="openMOodal2([[${apply.user_id}]],[[${post_id}]],'deny' )" value="거절"/></td>
+          <td><input type="button" class="btn btn-danger" th:onclick="openModal2([[${apply.user_id}]],[[${post_id}]],'deny' )" value="거절"/></td>
         </tr>
       </tbody>
     </table>
@@ -111,6 +111,7 @@
         <th scope="col">아이디</th>
         <th scope="col">이메일</th>
         <th scope="col">평점</th>
+        <th scope="col"></th>
         <th scope="col"></th>
       </thead>
       <tbody th:if="${not #lists.isEmpty(applyList)}">
@@ -134,7 +135,7 @@
         <button type="button" class="btn-close" onclick="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="/CreateTeamspacePro" >
+        <form method="get" action="/CreateTeamspacePro" >
         <h6>정말 팀원을 확정하고 팀스페이스를 생성하시겠습니까?</h6>
         <input type="text" name="teamspace_name" class="form-control" placeholder="TeamspaceName" aria-label="TeamspaceName" aria-describedby="basic-addon1">
           <table class="table">
@@ -142,14 +143,14 @@
             <th scope="col">아이디</th>
             <th scope="col">이메일</th>
             <th scope="col">평점</th>
-            <th scope="col"></th>
+            <th scope="col">부팀장 선택</th>
             </thead>
             <tbody th:if="${not #lists.isEmpty(applyList)}">
             <tr th:each="apply : ${applyList}" th:if="${apply.apply_status != null}">
               <td th:text="${apply.user_id}"></td>
               <td th:text="${apply.email}"></td>
               <td th:text="${apply.score}"></td>
-              <td th:if="${apply.apply_status == 'confirm'}"></td>
+              <td th:if="${apply.apply_status == 'confirm'}"><input type="radio" name="sub_master" th:value="${apply.user_id}"/> </td>
               <td class="text-warning"th:if="${apply.apply_status == 'master'}">팀장</td>
             </tr>
             </tbody>

@@ -16,7 +16,7 @@ public class ApplyService {
     private JdbcTemplate jdbcTemplate;
 
     public void memberAccept(Long user_id, Long post_id) {
-        String sql =  "update apply set apply_status = 'confirm' where user_id = ? and post_id = ?";
+        String sql =  "update apply set status = 'confirm' where user_id = ? and post_id = ?";
         jdbcTemplate.update(sql, user_id,post_id);
     }
 
@@ -26,11 +26,11 @@ public class ApplyService {
     }
 
     public List<ApplyResponseDto> getApplyList(Long post_id) {
-        String sql = "select u.user_id, u.user_email, u.user_score, a.apply_status from users u, apply a where post_id = ? and u.user_id = a.user_id";
+        String sql = "select u.user_id, u.email, u.score, a.status from users u, apply a where post_id = ? and u.user_id = a.user_id";
         List<ApplyResponseDto> apply_list = jdbcTemplate.query(sql, new Object[]{post_id}, new RowMapper<ApplyResponseDto>() {
             @Override
             public ApplyResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ApplyResponseDto applyResponseDto = new ApplyResponseDto(rs.getString("user_email"),rs.getInt("user_score"), rs.getLong("user_id"),rs.getString("apply_status"));
+                ApplyResponseDto applyResponseDto = new ApplyResponseDto(rs.getString("email"),rs.getInt("score"), rs.getLong("user_id"),rs.getString("status"));
                 return applyResponseDto;
             }
         });

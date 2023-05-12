@@ -21,7 +21,7 @@ public class AttendanceRowMapper implements RowMapper<AttendanceResponseDto> {
         } else {
             attendanceResponseDto.setCalendar_date(date.toLocalDateTime());
         }
-        attendanceResponseDto.setAtt_check(rs.getString("attendance_check"));
+        attendanceResponseDto.setAtt_check(rs.getString("att_check"));
         attendanceResponseDto.setEtc(rs.getString("etc"));
         attendanceResponseDto.setStatus(rs.getString("status"));
         return attendanceResponseDto;
