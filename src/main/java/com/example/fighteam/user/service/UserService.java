@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -12,14 +15,22 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public void signUp(User user){
         user.setRole("USER");
-        userRepository.save(user);
+        user.setJoinDate(LocalDateTime.now());
+        User save = userRepository.save(user);
+        System.out.println("saveUser = " + save);
     }
 
     public User loginUser(String email, String passwd){
         User user = userRepository.selectUserInfo(email,passwd);
         return user;
+    }
+
+    public User findUser(Long id) {
+        return userRepository.findById(id).orElse(null);
+
     }
 
 

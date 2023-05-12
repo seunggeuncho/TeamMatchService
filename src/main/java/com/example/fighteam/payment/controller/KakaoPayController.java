@@ -1,12 +1,13 @@
 package com.example.fighteam.payment.controller;
 
-import com.example.fighteam.payment.domain.Member;
 import com.example.fighteam.payment.repository.HistoryRepository;
-import com.example.fighteam.payment.repository.MemberRepository;
-import com.example.fighteam.payment.service.MemberService;
+import com.example.fighteam.payment.service.ChargeService;
 import com.example.fighteam.payment.service.kakao.KakaoPayService;
 import com.example.fighteam.payment.service.kakao.dto.ApproveResponse;
 import com.example.fighteam.payment.service.kakao.dto.RequestPay;
+import com.example.fighteam.user.domain.repository.User;
+import com.example.fighteam.user.domain.repository.UserRepository;
+import com.example.fighteam.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @SessionAttributes("tid")
 public class KakaoPayController {
-    private final MemberService memberService;
-    private final MemberRepository memberRepository;
+    private final ChargeService chargeService;
+    private final UserService userService;
     private final HistoryRepository historyRepository;
     private final KakaoPayService kakaoPayService;
     @Value("${AdminKey}")
@@ -44,10 +45,10 @@ public class KakaoPayController {
     @ResponseBody
     public RequestPay payReady(@RequestBody PaymentDto paymentDto, Model model, HttpSession session) {
         Long loginId = (Long) session.getAttribute("loginId");
-        Member member = memberRepository.findMember(loginId);
+        User user = userService.findUser(loginId);
 
         // 카카오 결제 준비하기	- 결제요청 service 실행.
-        RequestPay requestPay = kakaoPayService.payReady(paymentDto.getCharge(), member);
+        RequestPay requestPay = kakaoPayService.payReady(paymentDto.getCharge(), user);
         // 요청처리후 받아온 결재고유 번호(tid)를 모델에 저장
         System.out.println("readyResponse = " + requestPay);
         model.addAttribute("tid", requestPay.getTid());
@@ -58,21 +59,19 @@ public class KakaoPayController {
     // 결제승인요청
     @GetMapping("/charge/pay/completed")
     public String payCompleted(@RequestParam("pg_token") String pgToken, @ModelAttribute("tid") String tid, Model model, HttpSession session) {
-//        System.out.println("tid = " + tid);
         String tid1 = (String) model.getAttribute("tid");
-//        System.out.println("tid1 = " + tid1);
-//        System.out.println("pgToken = " + pgToken);
+
         //세션에 로그인된 회원 정보를 결제 요청으로 넘김
         Long loginId = (Long) session.getAttribute("loginId");
-        Member member = memberRepository.findMember(loginId);
+        User user = userService.findUser(loginId);
+
 
         // 카카오 결제 승인 요청하기
-        ApproveResponse approveResponse = kakaoPayService.payApprove(tid, pgToken, member);
+        ApproveResponse approveResponse = kakaoPayService.payApprove(tid, pgToken, user);
         int cost = approveResponse.getAmount().getTotal();
-//        System.out.println("approveResponse. = " + cost);
 
         // history에 결제내역 저장
-        memberService.chargeDeposit(member.getId(), cost);
+        chargeService.chargeDeposit(user.getId(), cost);
 
 
         return "redirect:/chargeSuccess";

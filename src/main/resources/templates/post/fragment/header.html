@@ -29,39 +29,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/post/home">Home</a>
                     </li>
-                  <!--  <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            게시글
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/post/study">Study</a></li>
-                            <li><a class="dropdown-item" href="/post/project">Project</a></li>
-                        </ul>
-                    </li>-->
                     <li class="nav-item">
                         <a class="nav-link" href="/post/createpost">새 글 쓰기</a>
                     </li>
                     <th:block th:if ="${session.userId == null}">
                         <li class="nav-item">
-                            <a class="nav-link" href="/user/login">Login / Sign up</a>
+                            <a class="nav-link" href="/login">Login / Sign up</a>
                         </li>
                     </th:block>
                     <th:block th:if ="${session.userId != null}">
-                        <!--
-                        <a class="nav-link dropdown" role="button" data-bs-toggle="dropdown">
-                          My Information
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="/post/mypage">My Page</a></li>
-                          <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
-                        </ul>-->
                         <div class="dropdown">
                             <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 My Information
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="/post/myboardcheck">My Page</a></li>
-                                <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
+                                <li><a class="dropdown-item" href="/myPageTeamspace">My Page</a></li>
+                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
                             </ul>
                         </div>
                     </th:block>

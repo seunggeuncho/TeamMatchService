@@ -1,6 +1,6 @@
 package com.example.fighteam.payment.repository;
 
-import com.example.fighteam.payment.domain.Post;
+import com.example.fighteam.post.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

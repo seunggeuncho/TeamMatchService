@@ -1,8 +1,8 @@
 package com.example.fighteam.post;
 
-import com.example.fighteam.post.domain.repository.Comment;
+import com.example.fighteam.post.domain.repository.CommentJdbc;
 import com.example.fighteam.post.domain.repository.CommentRepository;
-import com.example.fighteam.post.domain.repository.Post;
+import com.example.fighteam.post.domain.repository.PostJdbc;
 import com.example.fighteam.post.domain.repository.PostRepository;
 import com.example.fighteam.post.service.CommentService;
 import com.example.fighteam.post.service.PostService;
@@ -28,12 +28,12 @@ public class PostConfig {
 
     @Bean
     public PostRepository postRepository() {
-        return new Post(dataSource);
+        return new PostJdbc(dataSource);
     }
 
     @Bean
     public CommentService commentService(){return new CommentService(commentRepository());}
 
     @Bean
-    public CommentRepository commentRepository(){return new Comment(dataSource);}
+    public CommentRepository commentRepository(){return new CommentJdbc(dataSource);}
 }

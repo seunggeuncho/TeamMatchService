@@ -31,9 +31,9 @@ public class PostController {
     CommentService commentService;
 
     @GetMapping("/createpost")  //게시판 생성
-    public String createForm(HttpSession session)
-    {
-        Long user_id = (Long)session.getAttribute("user_id");
+    public String createForm(HttpSession session) {
+        Long user_id = (Long)session.getAttribute("loginId");
+        System.out.println("user_id = " + user_id);
         if (user_id != null){
             return "post/createpost";
         }else{
@@ -45,7 +45,7 @@ public class PostController {
     public String create(CreatePostDto createPostDto, Model model, HttpSession session){
         CreatePostDto createPostDto1;
         createPostDto1 = createPostDto;
-        Long user_id = (Long)session.getAttribute("user_id");
+        Long user_id = (Long)session.getAttribute("loginId");
         createPostDto1.setUser_id(user_id);
         createPostDto1.setComplete("0");
         model.addAttribute("post", createPostDto1);
@@ -118,7 +118,7 @@ public class PostController {
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable Long id, Model model,HttpSession session){
-        Long user_id = (Long)session.getAttribute("user_id");
+        Long user_id = (Long)session.getAttribute("loginId");
         if (user_id != null){
             GetPostUpdateResponseDto getPostUpdateResponseDto;
             getPostUpdateResponseDto = postService.detailPostForUpdate(id);
@@ -139,7 +139,7 @@ public class PostController {
 
     @GetMapping("/myboardcheck")
     public String paging(Model model, HttpSession session){
-        Long id = (Long) session.getAttribute("user_id");
+        Long id = (Long) session.getAttribute("loginId");
         List<GetBoardResponseDto> getBoardResponseDto;
 
         getBoardResponseDto = postService.findPostbyUserId(id);

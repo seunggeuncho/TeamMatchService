@@ -3,10 +3,10 @@ package com.example.fighteam.payment.service;
 import com.example.fighteam.payment.domain.Apply;
 import com.example.fighteam.payment.domain.History;
 import com.example.fighteam.payment.domain.HistoryType;
-import com.example.fighteam.payment.domain.Member;
 import com.example.fighteam.payment.repository.ApplyRepository;
 import com.example.fighteam.payment.repository.HistoryRepository;
-import com.example.fighteam.payment.repository.MemberRepository;
+import com.example.fighteam.user.domain.repository.User;
+import com.example.fighteam.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +21,7 @@ public class PenaltyService {
 
     private final ApplyRepository applyRepository;
     private final HistoryRepository historyRepository;
-    private final MemberRepository memberRepository;
-
+    private final UserService userService;
 
     public int penaltyLogic (Long id, int cost) {
 
@@ -49,10 +48,11 @@ public class PenaltyService {
         //팀 프로젝트 종료후 보증금 반환
         Apply findApply = applyRepository.findByMember(id);
         int userDeposit = findApply.getUserDeposit();
-        Member findMember = findApply.getMember();
-        findMember.plusDeposit(userDeposit);
 
-        History history = new History(findMember, findApply, HistoryType.REFUND, userDeposit, findMember.getDeposit());
+        User findUser = findApply.getUser();
+        findUser.plusDeposit(userDeposit);
+
+        History history = new History(findUser, findApply, HistoryType.REFUND, userDeposit, findUser.getDeposit());
         historyRepository.saveHistory(history);
         return userDeposit;
 

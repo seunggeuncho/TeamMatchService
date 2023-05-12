@@ -27,7 +27,7 @@ public class ChatController {
 
     @PostMapping("/chat/creating")
     public String createChatRoom(@RequestParam("postUser") Long findUser, HttpSession session){
-        Long[] chatMember = {findUser, (Long) session.getAttribute("userId")};
+        Long[] chatMember = {findUser, (Long) session.getAttribute("loginId")};
         Long chatRoomId = chatService.createChat(chatMember);
         return "redirect:/chat/room/enter/"+chatRoomId;
     }
