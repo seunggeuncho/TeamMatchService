@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js'></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<body>
+<div id="header" th:include="header"></div>
+<div>
+    <table class="table">
+        <thead>
+        <th scope="col">게시글 아이디</th>
+        <th scope="col">팀스페이스 아이디</th>
+        <th scope="col">멤버 상태</th>
+        <th scope="col">팀스페이스 상태</th>
+        <th scope="col"></th>
+        </thead>
+        <tbody th:if="${not #lists.isEmpty(team_list)}">
+        <tr th:each="team : ${team_list}">
+            <td th:if="${team.apply_status == null}"><a th:href="@{/postDetail(post_id=${team.post_id})}" class="link-primary"><p th:text="${team.post_id}"></p></a></td>
+            <td th:if="${team.apply_status != null}"><a th:href="@{/attendanceMain(teamspace_id=${team.post_id})}" class="link-primary"><p th:text="${team.post_id}"></p></a></td>
+            <td th:text="${team.teamspace_id}"></td>
+            <td th:if="${team.apply_status == 'master'}">마스터</td>
+            <td th:if="${team.apply_status == 'confirm'}">멤버</td>
+            <td th:if="${team.apply_status == null}">수락 대기</td>
+            <td th:text="${team.teamspace_status}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
