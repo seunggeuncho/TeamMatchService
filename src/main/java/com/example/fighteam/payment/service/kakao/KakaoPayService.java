@@ -28,7 +28,7 @@ public class KakaoPayService {
 
 
         String order_id = "충전" + member.getId();
-        System.out.println("order_id = " + order_id);
+//        System.out.println("order_id = " + order_id);
 
         // 카카오가 요구한 결제요청request값을 담아줍니다.
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
@@ -44,16 +44,18 @@ public class KakaoPayService {
         parameters.add("fail_url", "http://localhost:8080/charge/pay/fail"); // 결제 실패시 넘어갈 url
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, getHeaders());
-        for (String s : parameters.keySet()) {
-            System.out.println("parameters." + s + " = " + parameters.get(s));
-        }
-        
+//        for (String s : parameters.keySet()) {
+//            System.out.println("parameters." + s + " = " + parameters.get(s));
+//        }
+//
         // 외부url요청 통로 열기.
         RestTemplate template = new RestTemplate();
         String url = "https://kapi.kakao.com/v1/payment/ready";
         // template으로 값을 보내고 받아온 ReadyResponse값 readyResponse에 저장.
+        // template.메소드 호출시 요청이 나감 여기서는 template.postForObject호출시 해당 url로 요청이 나감
+        // HTTP POST 요청 후 결과는 객체로 반환
         RequestPay requestPay = template.postForObject(url, requestEntity, RequestPay.class);
-        System.out.println("readyResponse in Service = " + requestPay);
+//        System.out.println("readyResponse in Service = " + requestPay);
         // 받아온 값 return
         return requestPay;
     }
@@ -87,7 +89,7 @@ public class KakaoPayService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "KakaoAK "+ adminKey);
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-        System.out.println("headers.get(\"Authorization\") = " + headers.get("Authorization"));
+//        System.out.println("headers.get(\"Authorization\") = " + headers.get("Authorization"));
 
         return headers;
     }
