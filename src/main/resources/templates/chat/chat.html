@@ -11,7 +11,7 @@
             display: none;
         }
     </style>
-    <th:block th:replace="chat/header :: header"></th:block>
+    <th:block th:replace="fragments/htmlHeader"></th:block>
 </head>
 
 
@@ -21,6 +21,8 @@
 
 <!--</head>-->
 <body>
+<div th:replace="fragments/header :: header"></div>
+
 <div class="container" id="app" v-cloak>
     <ul class="list-group" style="height: 80vh; overflow-y: auto; word-wrap: break-word; word-break: break-all">
         <li class="list-group-item" v-for="message in messages" :class="{'float-right': message.sender === senderId}">
