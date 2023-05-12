@@ -47,7 +47,7 @@ public class ChatController {
     @GetMapping("/chat/room/enter/{roomId}")
     public String enterChatroom(@PathVariable Long roomId, Model model, HttpSession session) {
         try {
-            Long loginUserId = (Long) session.getAttribute("userId");
+            Long loginUserId = (Long) session.getAttribute("loginId");
             model.addAttribute("nowSender", loginUserId);
             model.addAttribute("roomInfo", roomId);
             return "chat/chat";
