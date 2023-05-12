@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * @author : 김효준
  * @fileName : ChatMessage
@@ -22,6 +24,9 @@ public class ChatMessage {
     @Column
     private String message;
 
+    @Column
+    private LocalDateTime createdTime;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User sender;
@@ -34,6 +39,7 @@ public class ChatMessage {
         this.message = message;
         this.sender = sender;
         this.chatRoom = chatRoom;
+        this.createdTime = LocalDateTime.now();
         chatRoom.getMessages().add(this);
     }
 }

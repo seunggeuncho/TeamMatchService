@@ -3,6 +3,8 @@ package com.example.fighteam.chat.domain.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author : 김효준
  * @fileName : ChatRoomRepository
@@ -10,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom,Long> {
+    List<ChatRoom> findAllByUserIdOrPostUserId(Long userId, Long postId);
 }
