@@ -3,7 +3,9 @@ package com.example.fighteam.payment.controller;
 import com.example.fighteam.payment.domain.Member;
 import com.example.fighteam.payment.domain.Post;
 import com.example.fighteam.payment.repository.MemberRepository;
-import com.example.fighteam.payment.repository.PostRepository;
+import com.example.fighteam.payment.repository.PostRepositoryJpa;
+import com.example.fighteam.post.domain.repository.PostRepository;
+
 import com.example.fighteam.payment.service.MemberService;
 import com.example.fighteam.payment.service.PaymentService;
 import jakarta.servlet.http.HttpSession;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PostRepository postRepository;
+    private final PostRepositoryJpa postRepository;
     private final PaymentService paymentService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
@@ -33,6 +35,8 @@ public class PaymentController {
 
         // apply가 아니라 post를 받아와야함
 //        Apply findApply = applyRepository.findByMemberWithPost(id);
+
+//        Post findPost = postRepository.findById(postId).orElse(null);
 
         Post findPost = postRepository.findById(postId).orElse(null);
 //        System.out.println("findPost.getId() = " + findPost.getId());

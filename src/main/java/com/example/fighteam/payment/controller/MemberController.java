@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    @GetMapping("/login")
+    @GetMapping("/login/pay")
     public String loginForm(Model model) {
         model.addAttribute("loginDto", new LoginDto());
         return "hwang/member/login";
     }
-    @PostMapping("/login")
+    @PostMapping("/login/pay")
     public String Login(LoginDto loginDto, HttpSession session) {
         Long loginId = memberService.login(loginDto.email, loginDto.password);
         session.setAttribute("loginId", loginId);

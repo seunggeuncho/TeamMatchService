@@ -14,5 +14,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * -----------------------------------------------------------
  * 2023/05/11        jeonghwan       최초 생성
  */
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepositoryJpa extends JpaRepository<Post, Long> {
 }

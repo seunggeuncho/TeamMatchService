@@ -6,10 +6,11 @@ import com.example.fighteam.payment.domain.Member;
 import com.example.fighteam.payment.repository.ApplyRepository;
 import com.example.fighteam.payment.repository.HistoryRepository;
 import com.example.fighteam.payment.repository.MemberRepository;
-import com.example.fighteam.payment.repository.PostRepository;
+import com.example.fighteam.payment.repository.PostRepositoryJpa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final HistoryRepository historyRepository;
     private final ApplyRepository applyRepository;
-    private final PostRepository postRepository;
+    private final PostRepositoryJpa postRepository;
     public Long join(Member member){
         memberRepository.save(member);
         return member.getId();

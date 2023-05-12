@@ -4,7 +4,7 @@ import com.example.fighteam.payment.domain.*;
 import com.example.fighteam.payment.repository.ApplyRepository;
 import com.example.fighteam.payment.repository.HistoryRepository;
 import com.example.fighteam.payment.repository.MemberRepository;
-import com.example.fighteam.payment.repository.PostRepository;
+import com.example.fighteam.payment.repository.PostRepositoryJpa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +26,13 @@ public class PaymentService {
     private final MemberRepository memberRepository;
     private final HistoryRepository historyRepository;
     private final ApplyRepository applyRepository;
-    private final PostRepository postRepository;
+    private final PostRepositoryJpa postRepositoryJpa;
 
     @Transactional
     public int payment(Long postId, Long memberId) { // 보증금 결제
 
 
-        Post post = postRepository.findById(postId).orElse(null);
+        Post post = postRepositoryJpa.findById(postId).orElse(null);
         Member member = memberRepository.findMember(memberId);
 
         //Apply 생성

@@ -5,6 +5,7 @@ import com.example.fighteam.apply.service.ApplyService;
 import com.example.fighteam.teamspace.domain.dto.AttendanceCheckRequestDto;
 import com.example.fighteam.teamspace.domain.dto.AttendanceResponseDto;
 import com.example.fighteam.teamspace.domain.dto.HistoryDto;
+import com.example.fighteam.teamspace.domain.dto.TeamspaceMyPageResponseDto;
 import com.example.fighteam.teamspace.service.TeamspaceService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
