@@ -1,10 +1,11 @@
 package com.example.fighteam.payment.controller;
 
-import com.example.fighteam.payment.domain.Apply;
 import com.example.fighteam.payment.domain.Member;
-import com.example.fighteam.payment.repository.ApplyRepository;
+import com.example.fighteam.payment.domain.Post;
 import com.example.fighteam.payment.repository.MemberRepository;
+import com.example.fighteam.payment.repository.PostRepository;
 import com.example.fighteam.payment.service.MemberService;
+import com.example.fighteam.payment.service.PaymentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,31 +18,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final ApplyRepository applyRepository;
+    private final PostRepository postRepository;
+    private final PaymentService paymentService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
-    @GetMapping("/payment")
-    public String payment(HttpSession session, Model model) {
+    @PostMapping("/payment")
+    public String payment(@RequestParam("post_id") Long postId, HttpSession session, Model model) {
         //나중에 postId도 파라미터로 받아와야함
 
         Long id = (Long) session.getAttribute("loginId");
         //  Apply findApply = applyRepository.findByMember(id); -> 쿼리가 3방 나감
         // apply1번 + getPost()1번 getMember() 1번 -> 페치 조인으로 한방에 불러오도록 수정
-        Apply findApply = applyRepository.findByMemberWithPost(id);
-        model.addAttribute("post", findApply.getPost());
-        model.addAttribute("apply", findApply);
-        model.addAttribute("member", findApply.getMember());
+
+        // apply가 아니라 post를 받아와야함
+//        Apply findApply = applyRepository.findByMemberWithPost(id);
+
+        Post findPost = postRepository.findById(postId).orElse(null);
+//        System.out.println("findPost.getId() = " + findPost.getId());
+        model.addAttribute("post", findPost);
+        model.addAttribute("member", memberRepository.findMember(id));
 
 
-        return "hwang/member/payment/paymentForm";
+        return "hwang/member/payment/paymentForm2";
     }
 
     @PostMapping("payment/submit")
-    public String paymentResult(@RequestParam("applyId") Long applyId, Model model) {
+    public String paymentSubmit(@RequestParam("post.id") Long postId, Model model, HttpSession session) {
 
-        System.out.println("applyId = " + applyId);
-        int payment = memberService.payment(applyId);
+        Long loginId = (Long) session.getAttribute("loginId");
+
+        //post.id, apply에들어갈 userdeposit
+//        System.out.println("postId = " + postId);
+        //apply 저장을 어떻게 할지 -> 내가하는게 편함 돈 관리여서
+        int payment = paymentService.payment(postId, loginId);
         model.addAttribute("payment", payment);
         return "redirect:/payment/success";
     }

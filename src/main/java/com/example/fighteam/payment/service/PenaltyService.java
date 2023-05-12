@@ -7,9 +7,7 @@ import com.example.fighteam.payment.domain.Member;
 import com.example.fighteam.payment.repository.ApplyRepository;
 import com.example.fighteam.payment.repository.HistoryRepository;
 import com.example.fighteam.payment.repository.MemberRepository;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +39,7 @@ public class PenaltyService {
         for (Apply apply : anotherApply) {
             //벌금을 내지않은 팀원들에게 패널티 금액 분배
             apply.plusUserDeposit(returnPenalty);
-            System.out.println("apply.getUserDeposit() = " + apply.getUserDeposit());
+//            System.out.println("apply.getUserDeposit() = " + apply.getUserDeposit());
         }
 
         return findApply.getUserDeposit();

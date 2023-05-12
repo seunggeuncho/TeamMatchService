@@ -2,12 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Payment Result</title>
+    <head th:replace="fragments/header :: header" >
 </head>
 <body>
-<h1>Payment Result</h1>
-<p>Successfully payment: <span th:text="${payment}"></span></p><br/>
-<p> <a href="/main">메인으로 이동 </a></p>
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:insert="fragments/mypageSide :: sidebar" class="col-3 bd-sidebar"/>
+        <!--여기까지가 sidebar -->
+        <main class="col-9 py-md-3  bd-content" role="main">
+            <div class="bd-cheatsheet container-fluid bg-body">
+                <!-- 여기까지 공통으로 설정-->
+                <h1>결제 완료</h1>
+                <p>결제 후 잔액: <span th:text="${payment}"></span></p><br/>
+                </div>
+        </main>
+    </div>
+</div>
 
 
 </body>

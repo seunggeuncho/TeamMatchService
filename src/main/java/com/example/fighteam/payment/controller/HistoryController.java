@@ -17,6 +17,10 @@ import java.util.List;
 public class HistoryController {
 
     private final HistoryRepository historyRepository;
+    @GetMapping("/test")
+    public String test() {
+        return "hwang/member/payment/test/test";
+    }
 
     @GetMapping("/history")
     public String getHistory() {
@@ -29,14 +33,14 @@ public class HistoryController {
     public String getHistoryList(@RequestParam("type") String type, Model model, HttpSession session) {
 
         Long id = (Long) session.getAttribute("loginId");
-        System.out.println("id = " + id);
-        System.out.println("type = " + type);
+//        System.out.println("id = " + id);
+//        System.out.println("type = " + type);
         List<History> findHistory = historyRepository.findByMemberId(id, type);
-        for (History history : findHistory) {
-            System.out.println("history.getDate() = " + history.getDate());
-            System.out.println("history.getCost() = " + history.getCost());
-            System.out.println("history.getBalance() = " + history.getBalance());
-        }
+//        for (History history : findHistory) {
+//            System.out.println("history.getDate() = " + history.getDate());
+//            System.out.println("history.getCost() = " + history.getCost());
+//            System.out.println("history.getBalance() = " + history.getBalance());
+//        }
         model.addAttribute("historyList", findHistory);
         return "hwang/history/historyList";
     }

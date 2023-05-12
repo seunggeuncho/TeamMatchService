@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
+
 public class Apply {
 
     @Id @GeneratedValue
@@ -30,6 +31,15 @@ public class Apply {
     
     private Boolean status;
 
+    public Apply() {
+    }
+
+    public Apply(Member member, Post post, int userDeposit, Boolean status) {
+        this.member = member;
+        this.post = post;
+        this.userDeposit = userDeposit;
+        this.status = status;
+    }
 
     public void plusUserDeposit(int cost) {
         this.userDeposit += cost;

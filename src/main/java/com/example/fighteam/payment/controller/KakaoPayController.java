@@ -29,8 +29,8 @@ public class KakaoPayController {
     @PostMapping("/charge/chargeJson")
 
     public String postPayment(@RequestBody PaymentDto paymentDto) {
-        System.out.println("paymentDto.getCharge() = " + paymentDto.getCharge());
-        System.out.println("adminKey = " + adminKey);
+//        System.out.println("paymentDto.getCharge() = " + paymentDto.getCharge());
+//        System.out.println("adminKey = " + adminKey);
         return "main";
     }
 
@@ -52,24 +52,24 @@ public class KakaoPayController {
         System.out.println("readyResponse = " + requestPay);
         model.addAttribute("tid", requestPay.getTid());
 
-        return requestPay; // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
+        return requestPay; // 클라이언트에(앞단으로) 보냄.(tid,next_redirect_pc_url이 담겨있음.)
     }
 
     // 결제승인요청
     @GetMapping("/charge/pay/completed")
     public String payCompleted(@RequestParam("pg_token") String pgToken, @ModelAttribute("tid") String tid, Model model, HttpSession session) {
-        System.out.println("tid = " + tid);
+//        System.out.println("tid = " + tid);
         String tid1 = (String) model.getAttribute("tid");
-        System.out.println("tid1 = " + tid1);
-        System.out.println("pgToken = " + pgToken);
+//        System.out.println("tid1 = " + tid1);
+//        System.out.println("pgToken = " + pgToken);
         //세션에 로그인된 회원 정보를 결제 요청으로 넘김
         Long loginId = (Long) session.getAttribute("loginId");
         Member member = memberRepository.findMember(loginId);
 
-        // 카카오 결제 요청하기
+        // 카카오 결제 승인 요청하기
         ApproveResponse approveResponse = kakaoPayService.payApprove(tid, pgToken, member);
         int cost = approveResponse.getAmount().getTotal();
-        System.out.println("approveResponse. = " + cost);
+//        System.out.println("approveResponse. = " + cost);
 
         // history에 결제내역 저장
         memberService.chargeDeposit(member.getId(), cost);

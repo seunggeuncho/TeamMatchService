@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -35,12 +36,21 @@ public class MemberController {
         return "hwang/member/main";
     }
 
-    @GetMapping("/charge")
     public String chargeForm(Model model, HttpSession session) {
 
         Long loginId = (Long) session.getAttribute("loginId");
         Member findmember = memberRepository.findMember(loginId);
-        System.out.println("findmember.getDeposit() = " + findmember.getDeposit());
+//        System.out.println("findmember.getDeposit() = " + findmember.getDeposit());
+        model.addAttribute("balance", findmember.getDeposit());
+        return "hwang/member/charge/chargeForm2";
+    }
+
+    @RequestMapping("/charge")
+    public String chargeFormJson(Model model, HttpSession session) {
+
+        Long loginId = (Long) session.getAttribute("loginId");
+        Member findmember = memberRepository.findMember(loginId);
+//        System.out.println("findmember.getDeposit() = " + findmember.getDeposit());
         model.addAttribute("balance", findmember.getDeposit());
         return "hwang/member/charge/chargeForm2";
     }
@@ -48,7 +58,7 @@ public class MemberController {
     @PostMapping("/charge/submit")
     public String chargeResult(@RequestParam("charge-amount") int cost, HttpSession session, Model model) {
         Long loginId = (Long) session.getAttribute("loginId");
-        System.out.println("loginId = " + loginId);
+//        System.out.println("loginId = " + loginId);
         int deposit = memberService.chargeDeposit(loginId, cost);
 
         return "redirect:/chargeSuccess";

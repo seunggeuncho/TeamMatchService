@@ -7,19 +7,13 @@
 </head>
 <body>
 
-<div class="container-fluid">
-    <div class="row flex-nowrap">
-    <div th:insert="fragments/mypageSide :: sidebar" class="col-3 bd-sidebar"/>
-        <!--여기까지가 sidebar -->
+<div class="bd-cheatsheet container-fluid bg-body">
+
+    <aside th:insert="fragments/mypageSide :: sidebar" class="sidebar col-md-3"/>
 
 
-
-    <main class="col-9 py-md-3  bd-content" role="main">
+    <section class="col-12 col-lg-10">
     <div class="bd-cheatsheet container-fluid bg-body">
-        <!-- 여기까지 공통으로 설정-->
-
-
-        <!-- 각자 본문 배치 -->
         <h1>보증금 충전</h1>
 
         <form role="form" th:action="@{/charge/submit}" method="post">
@@ -48,10 +42,7 @@
             <button type="button" class="btn" onclick="submitJson()"><img src="/kakaopay/payment_icon_yellow_medium.png"> </button>
         </form>
     </div>
-    </main>
-    </div>
-    </div>
-
+    </section>
 </div>
 </body>
 </html>

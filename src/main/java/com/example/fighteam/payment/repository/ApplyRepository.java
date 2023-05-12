@@ -1,9 +1,7 @@
 package com.example.fighteam.payment.repository;
 
 import com.example.fighteam.payment.domain.Apply;
-import com.example.fighteam.payment.domain.Member;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +12,11 @@ public class ApplyRepository {
 
     @Autowired
     private EntityManager em;
+
+    public Apply save(Apply apply) {
+        em.persist(apply);
+        return apply;
+    }
 
     public Apply findOne(Long id) {
         return em.find(Apply.class, id);
