@@ -3,7 +3,6 @@ package com.example.fighteam.chat.controller;
 import com.example.fighteam.chat.domain.dto.ChatMessageRequestDto;
 import com.example.fighteam.chat.domain.dto.ChatMessageResponseDto;
 import com.example.fighteam.chat.service.ChatMessageService;
-import com.example.fighteam.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
