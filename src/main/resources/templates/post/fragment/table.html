@@ -28,7 +28,7 @@
     <td class = "font-weight-bold" th:text="${board.typeContent}"></td>
     <td class = "font-weight-bold" th:text="${board.languageContent}">d</td>
     <td class = "font-weight-bold" th:text="${board.enddate}"></td>
-    <td class = "font-weight-bold" th:text="${board.deposit}"></td>
+    <td class = "font-weight-bold" th:text="${board.deposit}+'만원'"></td>
     <td><a class="btn btn-outline-dark" th:href="@{|/post/res/${board.post_id}|}">자세히 보기</a></td>
   </tr>
   </tbody>

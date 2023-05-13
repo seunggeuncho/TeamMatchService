@@ -1,5 +1,7 @@
 package com.example.fighteam.post.controller;
 
+import com.example.fighteam.apply.domain.dto.ApplyResponseDto;
+import com.example.fighteam.apply.service.ApplyService;
 import com.example.fighteam.post.domain.dto.*;
 import com.example.fighteam.post.service.CommentService;
 import com.example.fighteam.post.service.PostService;
@@ -20,13 +22,16 @@ import java.util.List;
 @RequestMapping("/post")
 public class PostController {
     @Autowired
-    public PostController(PostService postService,CommentService commentService) {
+    public PostController(PostService postService, CommentService commentService, ApplyService applyService) {
         this.postService = postService;
         this.commentService = commentService;
+        this.applyService = applyService;
     }
 
 
     PostService postService;
+
+    ApplyService applyService;
 
     CommentService commentService;
 
@@ -37,7 +42,7 @@ public class PostController {
         if (user_id != null){
             return "post/createpost";
         }else{
-            return "user/login";
+            return "redirect:/user/login";
         }
     }
 
@@ -102,8 +107,7 @@ public class PostController {
         model.addAttribute("total", total);
         return "post/home";
     }
-
-
+    
     @GetMapping("/res/{id}")
     public String test(@PathVariable Long id, Model model, HttpSession session) {
         GetPostDetailResponseDto getPostDetailResponseDto;
@@ -111,11 +115,15 @@ public class PostController {
         getPostDetailResponseDto = postService.findByPostId(id);
         getCommentDto = commentService.getComment(getPostDetailResponseDto.getPost_id());
         int commentnum = getCommentDto.toArray().length;
+        List<ApplyResponseDto> apply_List = applyService.getApplyList(id);
+
         model.addAttribute("board", getPostDetailResponseDto);
         model.addAttribute("commentList", getCommentDto);
         model.addAttribute("commentnum", commentnum);
-        return "post/postDetail";}
-
+        model.addAttribute("applyList", apply_List);
+        model.addAttribute("post_id", id);
+        return "post/postDetail";
+    }
     @GetMapping("/update/{id}")
     public String update(@PathVariable Long id, Model model,HttpSession session){
         Long user_id = (Long)session.getAttribute("loginId");
