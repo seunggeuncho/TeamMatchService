@@ -4,6 +4,8 @@ import com.example.fighteam.user.domain.repository.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +28,7 @@ public class Post {
     private LocalDateTime enddate;
     private int recruitdate;
     private int deposit;
+    @CreatedDate
     private LocalDateTime date;
     private int count;
     private String complete;

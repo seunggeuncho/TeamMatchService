@@ -17,12 +17,12 @@
 
 </head>
 <body>
-<div th:replace=""fragments/header :: header">
+<div th:replace="fragments/header :: header">
 
 </div>
 <div class="container-fluid">
     <div class="row flex-nowrap">
-    <div th:insert="post/fragment/mypageSide3 :: sidebar" class="col-2 bd-sidebar"/>
+        <div th:insert="fragments/mypageSide :: sidebar" class="col-3 bd-sidebar"/>
         <!--        여기까지가 sidebar 공통-->
 
 
