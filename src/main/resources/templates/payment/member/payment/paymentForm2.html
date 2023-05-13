@@ -24,27 +24,36 @@
 
 
             <h1>보증금 결제</h1>
-            <form role="form" th:action="@{/payment/submit}" method="post">
+            <form role="form" th:action="@{/payment/submit}" th:object="${paymentDto}" method="post">
             <!--    <input type="hidden" th:name="id" th:value="${apply.id}" />-->
             <div class="form-group">
-                <input type="hidden" th:name="post.id" th:value="${post.id}"/>
+                <input type="hidden" th:field="*{postId}"/>
+                <input type="hidden" th:field="*{postDeposit}"/>
+                <input type="hidden" th:field="*{postTitle}"/>
+                <input type="hidden" th:field="*{userDeposit}"/>
+                <input type="hidden" th:field="*{userId}"/>
+
             </div>
             <div class="form-group">
                 <label for="postId">결제 내역: 게시글 </label>
-                <span th:field="*{post.title}" th:text="${post.title}" id="postId"></span></br></br>
+                <span th:text="*{postTitle}" id="postId"></span></br></br>
             </div>
             <div class="form-group">
                 <label for="cost">결제 금액</label>
-                <span th:field="*{post.deposit}" id="cost" th:text="${post.deposit} + '원'" ></span><br><br>
+                <span  id="cost" th:text="${paymentDto.postDeposit} + '원'" ></span><br><br>
             </div>
             <div class="form-group">
                 <label for="balance">현재잔액:</label>
-                <span th:field="*{member.deposit}" id="balance" th:text="${member.deposit} + '원'" ></span><br><br>
+                <span  id="balance" th:text="${paymentDto.userDeposit} + '원'" ></span><br><br>
             </div>
             <div class="form-group">
                 <label>결제후 잔액:</label>
-                <span  th:text="${member.deposit} - ${post.deposit}"></span></br></br>
+                <span  th:text="${paymentDto.userDeposit} - ${paymentDto.postDeposit} + 원"></span></br></br>
             </div>
+
+                <div>
+                    <span th:if="${errorMessage != null}" class="alert alert-danger" th:text="${errorMessage}"></span></br></br>
+                </div>
             <button type="submit" class="btn btn-danger" formaction="/charge">보증금 충전</button>
             <button type="submit" class="btn btn-danger" >보증금 결제</button>
 
