@@ -7,6 +7,7 @@ import com.example.fighteam.teamspace.domain.dto.TeamspaceMyPageResponseDto;
 import com.example.fighteam.teamspace.domain.repository.AttendanceRepository;
 import com.example.fighteam.teamspace.domain.repository.TeamspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
@@ -119,7 +120,12 @@ public class TeamspaceService {
 
     public boolean isMaster(Long user_id, Long post_id){
         String sql = "select status from apply where user_id = ? and post_id = ?";
-        String status = jdbcTemplate.queryForObject(sql, new Object[]{user_id, post_id}, String.class);
+        String status = null;
+        try{
+            status= jdbcTemplate.queryForObject(sql, new Object[]{user_id, post_id}, String.class);
+        }catch (EmptyResultDataAccessException e){
+            status = null;
+        }
         if(status.equals("master")){
             return true;
         }else{
@@ -128,7 +134,12 @@ public class TeamspaceService {
     }
     public boolean isMember(Long user_id, Long post_id){
         String sql = "select status from apply where user_id = ? and post_id = ?";
-        String status= jdbcTemplate.queryForObject(sql, new Object[]{user_id, post_id}, String.class);
+        String status= null;
+        try{
+            status= jdbcTemplate.queryForObject(sql, new Object[]{user_id, post_id}, String.class);
+        }catch (EmptyResultDataAccessException e){
+            status = null;
+        }
         if(status.equals(null)){
             return false;
         }else{
@@ -138,7 +149,12 @@ public class TeamspaceService {
     public boolean isMemberByTsid(Long user_id, Long teamspace_id){
         System.out.println("user:"+user_id+"team:"+teamspace_id);
         String sql = "select status from apply where user_id = ? and teamspace_id = ?";
-        String status= jdbcTemplate.queryForObject(sql, new Object[]{user_id, teamspace_id}, String.class);
+        String status = null;
+        try{
+            status= jdbcTemplate.queryForObject(sql, new Object[]{user_id, teamspace_id}, String.class);
+        }catch (EmptyResultDataAccessException e){
+            status = null;
+        }
         if(status.equals(null)){
             return false;
         }else{
