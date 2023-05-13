@@ -41,9 +41,7 @@ public class PaymentService {
         Apply apply = new Apply(member, post, post.getDeposit(), "false");
         int cost = post.getDeposit();
         //0원 보다 작으면 에러 발생
-
         member.minusDeposit(cost);
-        apply.plusUserDeposit(cost);
 
         int userDeposit = member.getDeposit();
         // 위의 로직이 끝나고 에러가 없으면 apply를 DB에 저장
