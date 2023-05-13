@@ -45,7 +45,7 @@ public class TeamspaceRestController {
     public ResponseEntity<String> isMember(@RequestBody Map<String, Object> param){
         Long teamspace_id = Long.valueOf(((Integer)param.get("teamspace_id")).longValue());
         Long user_id = Long.valueOf(param.get("user_id").toString());
-        String sql = "select apply_status from apply where teamspace_id = ? and user_id = ?";
+        String sql = "select status from apply where teamspace_id = ? and user_id = ?";
         String apply_status = jdbcTemplate.queryForObject(sql, new Object[]{teamspace_id,user_id},String.class);
         return ResponseEntity.ok(apply_status);
     }
@@ -53,7 +53,7 @@ public class TeamspaceRestController {
     @ResponseBody
     public ResponseEntity<List<Long>> GetMembers(@RequestBody Map<String,Object> param){
         Long teamspace_id = Long.valueOf(((Integer)param.get("teamspace_id")).longValue());
-        String sql = "select user_id from apply where teamspace_id = ? and apply_status is not null";
+        String sql = "select user_id from apply where teamspace_id = ? and status is not null";
         List<Long> members = jdbcTemplate.query(sql, new Object[]{teamspace_id}, new RowMapper<Long>() {
             @Override
             public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -67,11 +67,13 @@ public class TeamspaceRestController {
     public String TeamspaceErrorManager(@RequestParam("error_code") String error_code){
         String url="";
         if(error_code.equals("nl")){//need login
-            url = "<script>alert('로그인이 필요한 서비스입니다.');location.href='http://localhost:8080/testLogin';</script>";
+            url = "<script>alert('로그인이 필요한 서비스입니다.');location.href='http://localhost:8080/user/login';</script>";
         }else if(error_code.equals("nm")){//not member
             url = "<script>alert('해당 팀의 멤버가 아닙니다.');window.location.href='http://localhost:8080/testMain';</script>";
         }else if(error_code.equals("nmst")){//not master
             url = "<script>alert('해당 팀의 마스터권한이 필요한 서비스입니다.');window.location.href='http://localhost:8080/testMain';</script>";
+        }else if(error_code.equals("et")){//exist teamspace
+            url = "<script>alert('이미 생성된 팀스페이스 입니다.');window.location.href='http://localhost:8080/myPageTeamspace';</script>";
         }
         return url;
     }
