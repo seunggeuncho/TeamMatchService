@@ -23,7 +23,7 @@ public class CommentJdbc implements  CommentRepository{
 
     @Override
     public Long saveComment(CreateCommentDto createCommentDto) {
-        String sql = "insert into comment(user_id, post_id, comment_content) values(?,?,?)";
+        String sql = "insert into comment(user_id, post_id, comment_content, comment_date) values(?,?,?, now())";
         Long result = null;
 
         try {

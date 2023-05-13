@@ -27,7 +27,7 @@ public class PostJdbc implements PostRepository {
     @Override
     public Long insertproject(CreatePostDto createPostDto) {
         String sql = "insert into post_table(user_id, title, content, startdate, enddate, " +
-                "recruitdate, deposit, count, complete,subject) values (?,?,?,?,?,?,?,?,?,?)";
+                "recruitdate, deposit, count, complete,subject, date) values (?,?,?,?,?,?,?,?,?,?, now())";
         Long result = null;
         try {
             conn = dataSource.getConnection();
