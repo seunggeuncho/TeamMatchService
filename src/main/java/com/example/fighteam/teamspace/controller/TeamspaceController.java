@@ -110,7 +110,7 @@ public class TeamspaceController {
         }else{
             Long session_user_id = Long.valueOf(session.getAttribute("loginId").toString());
             if(teamspaceService.isMaster(session_user_id,post_id)){
-                if(!teamspaceService.TeamspaceIsExistByPost(post_id.toString())){
+                if(teamspaceService.TeamspaceIsExistByPost(post_id.toString())){//배포시 조건에!
                     List<ApplyResponseDto> apply_List = applyService.getApplyList(post_id);
                     model.addAttribute("applyList",apply_List);
                     model.addAttribute("post_id", post_id);
