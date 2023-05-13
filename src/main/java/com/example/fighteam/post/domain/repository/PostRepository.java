@@ -37,5 +37,5 @@ public interface PostRepository {
     List<GetBoardResponseDto> findPostByUserID(Long id);
 
 
-
+    void completePost(Long postId);
 }

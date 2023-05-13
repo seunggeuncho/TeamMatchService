@@ -50,8 +50,8 @@ public class CommentJdbc implements  CommentRepository{
 
     @Override
     public List<GetCommentDto> findbyPostid(Long post_id) {
-        String sql = "select comment_id, user_id, post_id, comment_content, comment_date from comment " +
-                "where post_id = ? order by comment_date desc";
+        String sql = "select comment_id, c.user_id, post_id, comment_content, comment_date, u.name " +
+                "from comment c inner join users u on u.user_id = c.user_id where post_id = ? order by comment_date desc";
         List<GetCommentDto> getCommentDto = new ArrayList<>();
         try{
             conn = dataSource.getConnection();
@@ -65,6 +65,7 @@ public class CommentJdbc implements  CommentRepository{
                 g.setUser_id(rs.getLong("user_id"));
                 g.setComment(rs.getString("comment_content"));
                 g.setCommentCreatedTime(rs.getDate("comment_date"));
+                g.setUser_name(rs.getString("name"));
                 getCommentDto.add(g);
             }
         }catch(Exception e){

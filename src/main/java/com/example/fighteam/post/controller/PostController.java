@@ -107,7 +107,7 @@ public class PostController {
         model.addAttribute("total", total);
         return "post/home";
     }
-    
+
     @GetMapping("/res/{id}")
     public String test(@PathVariable Long id, Model model, HttpSession session) {
         GetPostDetailResponseDto getPostDetailResponseDto;
@@ -187,6 +187,11 @@ public class PostController {
         }else{
             return new ResponseEntity<>("삭제를 실패하였습니다.", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/complete")
+    public void complete(Long post_id){
+        postService.completepost(post_id);
     }
 
     /*

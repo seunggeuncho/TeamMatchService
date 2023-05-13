@@ -157,4 +157,7 @@ public class PostService {
     }
 
 
+    public void completepost(Long postId) {
+        postRepository.completePost(postId);
+    }
 }

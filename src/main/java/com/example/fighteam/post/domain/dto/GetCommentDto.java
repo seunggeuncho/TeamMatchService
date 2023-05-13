@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class GetCommentDto {
     private Long comment_id;
+    private String user_name;
     private Long user_id;
     private String comment;
     private Long post_id;

@@ -183,6 +183,22 @@ public class PostJdbc implements PostRepository {
         return g;
     }
 
+    @Override
+    public void completePost(Long postId) {
+        String sql = "update post_table set complete = '1' where post_id = ?";
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, postId);
+            int res = pstmt.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+    }
+
 
     @Override
     public Boolean insertlanguage(Long post_id, String language) {
