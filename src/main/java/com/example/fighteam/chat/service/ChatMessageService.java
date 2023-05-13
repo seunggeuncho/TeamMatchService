@@ -31,13 +31,15 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Transactional
-    public void messageSave(ChatMessageRequestDto messageDto){
+    public ChatMessageResponseDto messageSave(ChatMessageRequestDto messageDto){
         ChatRoom chatRoom = chatRoomRepository.findById(Long.parseLong(messageDto.getRoomId())).orElse(null);
         User sendUser = userRepository.findById(Long.parseLong(messageDto.getSender())).orElse(null);
+        String userName = sendUser.getName();
         if (chatRoom != null && sendUser != null) {
             ChatMessage message = new ChatMessage(messageDto.getMessage(), sendUser, chatRoom);
             chatMessageRepository.save(message);
         }
+        return new ChatMessageResponseDto(messageDto.getSender(), messageDto.getMessage(), messageDto.getRoomId(), userName);
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +48,7 @@ public class ChatMessageService {
         List<ChatMessage> messages = chatRoom.getMessages();
         List<ChatMessageResponseDto> result = new ArrayList<>();
         for (ChatMessage c : messages) {
-            result.add(new ChatMessageResponseDto(String.valueOf(c.getSender().getId()), c.getMessage(), String.valueOf(roomId)));
+            result.add(new ChatMessageResponseDto(String.valueOf(c.getSender().getId()), c.getMessage(), String.valueOf(roomId),c.getSender().getName()));
         }
         Collections.reverse(result);
         return result;
