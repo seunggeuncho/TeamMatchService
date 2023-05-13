@@ -2,6 +2,7 @@ package com.example.fighteam.payment.domain;
 
 
 import com.example.fighteam.post.domain.Post;
+import com.example.fighteam.teamspace.domain.repository.Teamspace;
 import com.example.fighteam.user.domain.repository.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class Apply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamspace_id")
-    private TeamSpace teamspace;
+    private Teamspace teamspace;
 
     private int userDeposit;
 
