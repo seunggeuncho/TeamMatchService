@@ -30,6 +30,13 @@ function openModal(loginId, user_id) {
     if(loginId == user_id){
       document.getElementById("payment_btn").style.display = "none";
     }
+    console.log(document.getElementsByName('apply_user_id').length);
+    for(var i = 0; i < document.getElementsByName('apply_user_id').length; i++){
+      console.log(document.getElementsByName('apply_user_id')[i].innerHTML);
+      if(document.getElementsByName('apply_user_id')[i].innerHTML == loginId){
+        document.getElementById("payment_btn").style.display = "none";
+      }
+    }
 }
 function closeModal() {
     document.getElementById("modal").style.display = "none";
@@ -159,9 +166,9 @@ function openPopup(url, name, width, height) {
     <div class='reply-wrap border-top' th:each ="comment : ${commentList}">
       <div class='reply-content' >
         <div class='reply-group'>
-          <strong class='left' th:text = "${comment.user_id}"></strong>&nbsp;
+          <strong class='left' th:text = "${comment.user_name}"></strong>&nbsp;&nbsp;
           <small class='left' th:text = "${comment.commentCreatedTime}"></small>&nbsp;
-          <th:block th:if ="${session.loginId != null and session.login.equals(comment.user_id)}">
+          <th:block th:if ="${session.loginId != null and #strings.equals(session.loginId, comment.user_id)}">
             <a href='#' class='right text-decoration-none link-dark' th:onclick='commentUpdate([[${comment.comment_id}]],[[${comment.comment}]])'><span class='bi bi-pencil'></span>수정</a>&nbsp;
             <a href='#' class='right text-decoration-none link-dark'  th:onclick='commentRemove([[${comment.comment_id}]])'><span class="bi bi-trash"></span>삭제</a>
           </th:block>
@@ -193,7 +200,7 @@ function openPopup(url, name, width, height) {
                 </thead>
                                                 <tbody th:if="${not #lists.isEmpty(applyList)}">
                                                 <tr th:each="apply : ${applyList}">
-                                                    <td class="col_id" th:text="${apply.user_id}"></td>
+                                                    <td class="col_id"name="apply_user_id"  th:text="${apply.user_id}"></td>
                                                     <td class="col_email" th:text="${apply.email}"></td>
                                                     <td class="col_score" th:text="${apply.score}"></td>
                                                     <td class="col_status" th:if="${apply.apply_status == 'master'}">팀장</td>
@@ -257,7 +264,7 @@ function makeInnerHtml(res, user_id){
         output += '<div class="reply-wrap border-top">';
         output += '<div class="reply-content">';
         output += '<div class="reply-group">';
-        output += '<strong class="left">'+ res[i].user_id + '</strong>';
+        output += '<strong class="left">'+ res[i].user_name + '</strong>&nbsp;';
         output += '<small class="left">' + res[i].commentCreatedTime + '</small>';
          if (user_id == res[i].user_id){
         output += '<a href="#" class="right text-decoration-none link-dark" onclick="commentUpdate('+ res[i].comment_id+',\''+res[i].comment+'\')"><span class="bi bi-pencil"></span>수정</a>';
