@@ -28,8 +28,8 @@ public class MessageController {
 
     @MessageMapping("/chat/message")
     public void sendMessage(ChatMessageRequestDto message) {
-        chatMessageService.messageSave(message);
-        messagingTemplate.convertAndSend("/queue/chat/room/enter/"+message.getRoomId(),message);
+        ChatMessageResponseDto chatMessageResponseDto = chatMessageService.messageSave(message);
+        messagingTemplate.convertAndSend("/queue/chat/room/enter/"+message.getRoomId(),chatMessageResponseDto);
     }
 
     @GetMapping("/room/{roomId}/messages")

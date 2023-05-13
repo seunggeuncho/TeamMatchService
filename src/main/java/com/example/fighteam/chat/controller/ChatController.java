@@ -1,6 +1,7 @@
 package com.example.fighteam.chat.controller;
 
 import com.example.fighteam.chat.domain.repository.ChatRoom;
+import com.example.fighteam.chat.domain.repository.ChatRoomRepository;
 import com.example.fighteam.chat.service.ChatRoomService;
 import com.example.fighteam.user.domain.repository.User;
 import com.example.fighteam.user.domain.repository.UserRepository;
@@ -23,13 +24,20 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController {
 
     private final UserRepository userRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomService chatService;
 
     @PostMapping("/chat/creating")
     public String createChatRoom(@RequestParam("postUser") Long findUser, HttpSession session){
-        Long[] chatMember = {findUser, (Long) session.getAttribute("loginId")};
-        Long chatRoomId = chatService.createChat(chatMember);
-        return "redirect:/chat/room/enter/"+chatRoomId;
+        Long loginUser = (Long) session.getAttribute("loginId");
+        if(findUser.equals(loginUser)) return "redirect:/mypageChat";
+        else {
+            ChatRoom chatRoom = chatRoomRepository.findByUserIdAndPostUserId(loginUser, findUser).orElse(null);
+            if(chatRoom!=null) return "redirect:/chat/room/enter/" + chatRoom.getId();
+            Long[] chatMember = {findUser, loginUser};
+            Long chatRoomId = chatService.createChat(chatMember);
+            return "redirect:/chat/room/enter/" + chatRoomId;
+        }
     }
 
     @GetMapping("/chat/room/{roomId}")
@@ -53,7 +61,7 @@ public class ChatController {
             return "chat/chat";
         } catch (Exception e) {
             log.error("NOT FIND CHATROOM : {}",e);
-            return "/";
+            return "redirect:/post/home";
         }
     }
 }
