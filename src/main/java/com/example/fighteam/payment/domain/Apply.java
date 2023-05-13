@@ -31,12 +31,12 @@ public class Apply {
     private int userDeposit;
 
     
-    private Boolean status;
+    private String status;
 
     public Apply() {
     }
 
-    public Apply(User user, Post post, int userDeposit, Boolean status) {
+    public Apply(User user, Post post, int userDeposit, String status) {
         this.user = user;
         this.post = post;
         this.userDeposit = userDeposit;

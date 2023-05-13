@@ -38,7 +38,7 @@ public class PaymentService {
         User member = userService.findUser(memberId);
 
         //Apply 생성
-        Apply apply = new Apply(member, post, post.getDeposit(), false);
+        Apply apply = new Apply(member, post, post.getDeposit(), "false");
         int cost = post.getDeposit();
         //0원 보다 작으면 에러 발생
 
