@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -24,8 +25,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   <script>
-function openModal() {
+function openModal(loginId, user_id) {
     document.getElementById("modal").style.display = "block";
+    if(loginId == user_id){
+      document.getElementById("payment_btn").style.display = "none";
+    }
 }
 function closeModal() {
     document.getElementById("modal").style.display = "none";
@@ -129,7 +133,7 @@ function openPopup(url, name, width, height) {
       <button class="btn btn-success" type="submit">채팅하기</button>
     </form>
     <p>&nbsp;</p>
-    <button type="button" class="btn btn-success" id="apply-btn" onclick="openModal()">지원하기</button>
+    <button type="button" class="btn btn-success" id="apply-btn" th:onclick="openModal([[${session.loginId}]],[[${board.user_id}]])">지원하기</button>
   </div>
   <div id="commentnum">
     <p class="h4 font-weight-bold" th:text="${commentnum} + '개의 댓글이 있습니다.'"></p>
@@ -151,66 +155,66 @@ function openPopup(url, name, width, height) {
 
 
   <!--댓글 출력 부분-->
-<div id="comment_list">
-  <div class='reply-wrap border-top' th:each ="comment : ${commentList}">
-    <div class='reply-content' >
-      <div class='reply-group'>
-        <strong class='left' th:text = "${comment.user_id}"></strong>&nbsp;
-        <small class='left' th:text = "${comment.commentCreatedTime}"></small>&nbsp;
-        <th:block th:if ="${session.loginId != null and session.login.equals(comment.user_id)}">
-        <a href='#' class='right text-decoration-none link-dark' th:onclick='commentUpdate([[${comment.comment_id}]],[[${comment.comment}]])'><span class='bi bi-pencil'></span>수정</a>&nbsp;
-        <a href='#' class='right text-decoration-none link-dark'  th:onclick='commentRemove([[${comment.comment_id}]])'><span class="bi bi-trash"></span>삭제</a>
-        </th:block>
+  <div id="comment_list">
+    <div class='reply-wrap border-top' th:each ="comment : ${commentList}">
+      <div class='reply-content' >
+        <div class='reply-group'>
+          <strong class='left' th:text = "${comment.user_id}"></strong>&nbsp;
+          <small class='left' th:text = "${comment.commentCreatedTime}"></small>&nbsp;
+          <th:block th:if ="${session.loginId != null and session.login.equals(comment.user_id)}">
+            <a href='#' class='right text-decoration-none link-dark' th:onclick='commentUpdate([[${comment.comment_id}]],[[${comment.comment}]])'><span class='bi bi-pencil'></span>수정</a>&nbsp;
+            <a href='#' class='right text-decoration-none link-dark'  th:onclick='commentRemove([[${comment.comment_id}]])'><span class="bi bi-trash"></span>삭제</a>
+          </th:block>
+        </div>
+        <pre class='clearfix' th:text = "${comment.comment}">" + data[i].reply + "</pre>
       </div>
-      <pre class='clearfix' th:text = "${comment.comment}">" + data[i].reply + "</pre>
     </div>
   </div>
-</div>
 
 
 
   <!--지원하기 모달-->
-<div id="modal" class="modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">신청자 목록</h5>
-        <button type="button" class="btn-close" onclick="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="applier_list">
-          <div id="applier_table_div">
-            <table id="applier_table" class="table">
-              <thead>
-              <th class="col_id" scope="col">아이디</th>
-              <th class="col_email" scope="col">email</th>
-              <th class="col_score" scope="col">평점</th>
-              <th class="col_status" scope="col">신청상태</th>
-              </thead>
-              <!--                                <tbody th:if="${not #lists.isEmpty(applyList)}">-->
-              <!--                                <tr th:each="apply : ${applyList}">-->
-              <!--                                    <td class="col_id" th:text="${apply.user_id}"></td>-->
-              <!--                                    <td class="col_email" th:text="${apply.email}"></td>-->
-              <!--                                    <td class="col_score" th:text="${apply.score}"></td>-->
-              <!--                                    <td class="col_status" th:if="${apply.apply_status == 'master'}">팀장</td>-->
-              <!--                                    <td class="col_status" th:if="${apply.apply_status == 'confirm'}">참여 확정</td>-->
-              <!--                                    <td class="col_status" th:if="${apply.apply_status == null}">수락 대기중</td>-->
-              <!--                                </tr>-->
-              <!--                                </tbody>-->
-            </table>
-          </div>
+  <div id="modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">신청자 목록</h5>
+          <button type="button" class="btn-close" onclick="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-footer">
-          <button type="button" onclick="closeModal()" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-          <form method="post" action="/payment" target="popup" id="paymentForm">
-            <input type="hidden" name="post_id" th:value="${board.post_id}"/>
-            <button type="submit" name="submit" class="btn btn-primary" onclick="openPopup('/payment', 'payment', 1500, 1000); return false;" >보증금 결제</button>
-          </form>
+        <div class="modal-body">
+          <div id="applier_list">
+            <div id="applier_table_div">
+              <table id="applier_table" class="table">
+                <thead>
+                <th class="col_id" scope="col">아이디</th>
+                <th class="col_email" scope="col">email</th>
+                <th class="col_score" scope="col">평점</th>
+                <th class="col_status" scope="col">신청상태</th>
+                </thead>
+                                                <tbody th:if="${not #lists.isEmpty(applyList)}">
+                                                <tr th:each="apply : ${applyList}">
+                                                    <td class="col_id" th:text="${apply.user_id}"></td>
+                                                    <td class="col_email" th:text="${apply.email}"></td>
+                                                    <td class="col_score" th:text="${apply.score}"></td>
+                                                    <td class="col_status" th:if="${apply.apply_status == 'master'}">팀장</td>
+                                                    <td class="col_status" th:if="${apply.apply_status == 'confirm'}">참여 확정</td>
+                                                    <td class="col_status" th:if="${apply.apply_status == 'false'}">수락 대기중</td>
+                                                </tr>
+                                                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" onclick="closeModal()" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            <form method="post" action="/payment" target="popup" id="paymentForm" >
+              <input type="hidden" name="post_id" th:value="${board.post_id}"/>
+              <button id="payment_btn"type="submit" name="submit" class="btn btn-primary" onclick="openPopup('/payment', 'payment', 1500, 1000); return false;" >보증금 결제</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
 
   <!--댓글 수정 모달-->
@@ -225,17 +229,17 @@ function openPopup(url, name, width, height) {
           <div class="reply-content">
             <input type="hidden" id="modalComment_id">
             <textarea class="form-control" rows="4" id="replyModalComment" placeholder="내용입력"></textarea>
-            </div>
+          </div>
           <div class="modal-footer">
             <button class="right btn btn-secondary" id="modalModBtn" th:onclick="updateReply()">수정하기</button>
             <button class="right btn btn-secondary" th:onclick="closeReply()">취소하기</button>
           </div>
-          </div>
-          <!-- 수정폼끝 -->
         </div>
+        <!-- 수정폼끝 -->
       </div>
     </div>
   </div>
+</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>

@@ -170,7 +170,7 @@ public class PostJdbc implements PostRepository {
                 getBoardResponseDto.setEnddate(rs.getDate("enddate"));
                 getBoardResponseDto.setCount(rs.getInt("count"));
                 getBoardResponseDto.setSubject(rs.getString("subject"));
-                getBoardResponseDto.setDeposit(rs.getInt("deposit"));
+                getBoardResponseDto.setDeposit(rs.getInt("deposit") / 10000);
                 getBoardResponseDto.setLanguageContent("");
                 getBoardResponseDto.setTypeContent("");
                 g.add(getBoardResponseDto);
@@ -261,7 +261,7 @@ public class PostJdbc implements PostRepository {
                 g.setEnddate(rs.getDate("enddate"));
                 g.setCount(rs.getInt("count"));
                 g.setSubject(rs.getString("subject"));
-                g.setDeposit(rs.getInt("deposit"));
+                g.setDeposit(rs.getInt("deposit") / 10000);
                 g.setLanguageContent("");
                 g.setTypeContent("");
                 getBoardResponseDto.add(g);
@@ -334,7 +334,7 @@ public class PostJdbc implements PostRepository {
                 getPostDetailResponseDto.setStartdate(rs.getDate("startdate"));
                 getPostDetailResponseDto.setEnddate(rs.getDate("enddate"));
                 getPostDetailResponseDto.setRecruitdate(rs.getInt("recruitdate"));
-                getPostDetailResponseDto.setDeposit(rs.getInt("deposit"));
+                getPostDetailResponseDto.setDeposit(rs.getInt("deposit") / 10000);
                 getPostDetailResponseDto.setDate(rs.getDate("date"));
                 getPostDetailResponseDto.setCount(rs.getInt("count"));
                 getPostDetailResponseDto.setSubject(rs.getString("subject"));
@@ -416,7 +416,7 @@ public class PostJdbc implements PostRepository {
                 g.setEnddate(rs.getDate("enddate"));
                 g.setCount(rs.getInt("count"));
                 g.setSubject(rs.getString("subject"));
-                g.setDeposit(rs.getInt("deposit"));
+                g.setDeposit(rs.getInt("deposit") / 10000);
                 g.setLanguageContent("");
                 g.setTypeContent("");
                 getBoardResponseDto.add(g);
