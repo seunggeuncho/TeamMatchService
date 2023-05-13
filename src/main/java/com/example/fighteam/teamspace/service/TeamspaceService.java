@@ -109,7 +109,7 @@ public class TeamspaceService {
         return  members;
     }
     public Long CreateTeamspace(String post_id, Long master, Long sub_master,String teamspace_name){
-        String delete_sql = "delete from apply where post_id = ? and status is null";
+        String delete_sql = "delete from apply where post_id = ? and status is 'false'";
         jdbcTemplate.update(delete_sql,post_id);
         String insert_sql = "insert into team_space(teamspace_id, post_id, teamspace_name, master, sub_master) values(nextval('seq_teamspace_id'), ?, ?, ?,?)";
         jdbcTemplate.update(insert_sql, post_id, teamspace_name, master, sub_master);

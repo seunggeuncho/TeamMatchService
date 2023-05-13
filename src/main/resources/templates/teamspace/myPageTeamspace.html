@@ -25,12 +25,12 @@
         </thead>
         <tbody th:if="${not #lists.isEmpty(team_list)}">
         <tr th:each="team : ${team_list}">
-            <td th:if="${team.apply_status == null}"><a th:href="@{/postDetail(post_id=${team.post_id})}" class="link-primary"><p th:text="${team.post_id}"></p></a></td>
-            <td th:if="${team.apply_status != null}"><a th:href="@{/attendanceMain(teamspace_id=${team.post_id})}" class="link-primary"><p th:text="${team.post_id}"></p></a></td>
+            <td th:if="${team.apply_status == 'false'}"><a th:href="@{/postDetail(post_id=${team.post_id})}" class="link-primary"><p th:text="${team.post_id}"></p></a></td>
+            <td th:if="${team.apply_status != 'false'}"><a th:href="@{/attendanceMain(teamspace_id=${team.post_id})}" class="link-primary"><p th:text="${team.post_id}"></p></a></td>
             <td th:text="${team.teamspace_id}"></td>
             <td th:if="${team.apply_status == 'master'}">마스터</td>
             <td th:if="${team.apply_status == 'confirm'}">멤버</td>
-            <td th:if="${team.apply_status == null}">수락 대기</td>
+            <td th:if="${team.apply_status == 'false'}">수락 대기</td>
             <td th:if="${team.teamspace_status}=='close'">
                 종료
             </td>
