@@ -26,21 +26,26 @@ public class HistoryController {
     public String getHistory() {
 
 
-        return "history/historyList";
+        return "redirect:/historySubmit";
     }
 
     @PostMapping("/historySubmit")
-    public String getHistoryList(@RequestParam("type") String type, Model model, HttpSession session) {
+    public String postHistoryList(@RequestParam("type") String type, Model model, HttpSession session) {
 
         Long id = (Long) session.getAttribute("loginId");
-//        System.out.println("id = " + id);
-//        System.out.println("type = " + type);
+
         List<History> findHistory = historyRepository.findByMemberId(id, type);
-//        for (History history : findHistory) {
-//            System.out.println("history.getDate() = " + history.getDate());
-//            System.out.println("history.getCost() = " + history.getCost());
-//            System.out.println("history.getBalance() = " + history.getBalance());
-//        }
+
+        model.addAttribute("historyList", findHistory);
+        return "history/historyList";
+    }
+    @GetMapping("/historySubmit")
+    public String getHistoryList( Model model, HttpSession session) {
+
+        Long id = (Long) session.getAttribute("loginId");
+
+        List<History> findHistory = historyRepository.findByMemberId(id, "all");
+
         model.addAttribute("historyList", findHistory);
         return "history/historyList";
     }
