@@ -20,8 +20,8 @@
 <div class="container" id="app" v-cloak>
     <ul class="list-group" style="height: 80vh; overflow-y: auto; word-wrap: break-word; word-break: break-all">
         <li class="list-group-item" v-for="message in messages" :class="{'float-right': message.sender === senderId}">
-            <p v-if="message.sender !== senderId">{{message.sender}} 님 - {{message.message}}</p>
-            <p v-else align="right">{{message.message}} - {{message.sender}} 님</p>
+            <p v-if="message.sender !== senderId">{{message.senderName}} 님 - {{message.message}}</p>
+            <p v-else align="right">{{message.message}} - {{message.senderName}} 님</p>
         </li>
     </ul>
     <div class="input-group" style="width: 100%; word-wrap: break-word;">
@@ -54,6 +54,7 @@
         data: {
             roomId: '',
             senderId: '',
+            senderName: '',
             message: '',
             messages: [],
         },
@@ -71,7 +72,7 @@
                 this.message = '';
             },
             recvMessage: function(recv) {
-                this.messages.unshift({"sender":recv.sender, "message":recv.message})
+                this.messages.unshift({"sender":recv.sender,"senderName":recv.senderName, "message":recv.message})
             }
         }
     });
