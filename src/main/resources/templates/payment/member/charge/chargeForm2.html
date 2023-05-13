@@ -39,12 +39,18 @@
                     <option value="20000">20,000원</option>
                     <option value="50000">50,000원</option>
                     <option value="100000">100,000원</option>
+                    <option value="200000">200,000원</option>
+                    <option value="300000">300,000원</option>
                 </select><br><br>
             </div>
             <div class="form-group">
                 <label for="balance">잔액:</label>
                 <span th:field="*{balance}" id="balance" th:text="${balance} + '원'"></span><br><br>
             </div>
+            <div>
+                <span th:if="${errorMessage != null}" class="alert alert-danger" th:text="${errorMessage}"></span>
+            </div>
+
             <button type="submit" class="btn btn-danger" >결제하기</button>
             <button type="button" class="btn" onclick="submitJson()"><img src="/kakaopay/payment_icon_yellow_medium.png"> </button>
         </form>
