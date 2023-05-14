@@ -25,7 +25,7 @@ public class ApplyController {
 //        model.addAttribute("board", getPostDetailResponseDto);
 //
 
-        return "/teamspace/ApplyMain";
+        return "teamspace/ApplyMain";
     }
 
 }

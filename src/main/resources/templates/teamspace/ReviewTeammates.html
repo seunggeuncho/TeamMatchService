@@ -75,14 +75,14 @@
     <table class="table">
         <h2>팀원 리스트</h2>
         <thead>
-        <th class="col" id="col_id">아이디</th>
+        <th class="col" id="col_id">이름</th>
         <th class="col" id="col_position">직책</th>
         <th class="col" id="col_score">평점</th>
         <th class="col" id="col_button"></th>
         </thead>
         <tbody th:if="${not #lists.isEmpty(applyList)}">
         <tr th:each="apply : ${applyList}">
-            <td th:text="${apply.user_id}"></td>
+            <td th:text="${apply.name}"></td>
             <td th:if="${apply.apply_status == 'confirm'}">팀원</td>
             <td th:if="${apply.apply_status == 'master'}">팀장</td>
             <td th:if="${apply.apply_status == 'sub_master'}">부팀장</td>
@@ -98,7 +98,7 @@
     <div class="modal-dialog">
         <div class="modal-content" id="modal_content">
             <div class="modal-header">
-                <h5 class="modal-title">신청자 목록</h5>
+                <h5 class="modal-title">팀원 평가</h5>
                 <button type="button" class="btn-close" onclick="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

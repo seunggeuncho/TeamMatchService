@@ -17,9 +17,10 @@ public class AttendanceResponseDto {
     private String etc;
     private String status;
     private int memberCnt;
+    private String name;
 
-    public AttendanceResponseDto(long teamspace_id, long calendar_id, long user_id, LocalDateTime calendar_date, String att_check, String etc, String status) {
-
+    public AttendanceResponseDto(String name,long teamspace_id, long calendar_id, long user_id, LocalDateTime calendar_date, String att_check, String etc, String status) {
+        this.name = name;
         this.teamspace_id = teamspace_id;
         this.calendar_id = calendar_id;
         this.user_id = user_id;

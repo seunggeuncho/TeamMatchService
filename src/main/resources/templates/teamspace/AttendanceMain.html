@@ -13,20 +13,15 @@
     window.onload = function(){
         session_user_id = document.getElementById('session_id_js').value;
         document.getElementById('hidden_tsid').value = document.getElementById('model_tsid_js').value;
-        console.log('tsid : '+document.getElementById('hidden_tsid').value);
         document.getElementById('hidden_user_id').value = document.getElementById('session_id_js').value;
-        console.log('user_id : '+document.getElementById('hidden_user_id').value);
-
-        console.log(session_user_id);
         $.ajax({
             url: '/isMember',
             type: 'POST',
-            data: JSON.stringify({teamspace_id: 1, user_id: session_user_id}),
+            data: JSON.stringify({teamspace_id: document.getElementById('model_tsid_js').value, user_id: session_user_id}),
             dataType: 'text',
             contentType: 'application/json',
             success: function(response) {
                 isMember_result = response;
-                console.log('isMember : '+isMember_result);
             },
             error: function(xhr, status, errorThrown) {
                 console.log(xhr+'-'+status+'-'+errorThrown);
@@ -35,7 +30,7 @@
         $.ajax({
             url: '/GetMembers',
             type: 'POST',
-            data: JSON.stringify({teamspace_id: 1}),
+            data: JSON.stringify({teamspace_id: document.getElementById('model_tsid_js').value}),
             dataType: 'JSON',
             contentType: 'application/json',
             success: function(response) {
@@ -44,10 +39,9 @@
                 }
             },
             error: function(xhr, status, errorThrown) {
-                failureCallback(errorThrown);
+                console.log(xhr+'-'+status+'-'+errorThrown);
             }
         });
-        console.log('isMember : '+isMember_result);
     }
 
 
@@ -99,7 +93,7 @@
             $.ajax({
                 url: '/AttendanceEventsClick',
                 type: 'POST',
-                data: JSON.stringify({teamspace_id: 1, date: info.dateStr, user_id: session_user_id}),
+                data: JSON.stringify({teamspace_id: document.getElementById('model_tsid_js').value, date: info.dateStr, user_id: session_user_id}),
                 dataType: 'JSON',
                 contentType: 'application/json',
                 success: function(response) {
@@ -111,7 +105,7 @@
                         if(response[0].status == 'confirm'){
                             document.getElementById('btn_sub').disabled=true;
                         }
-                    }else if(isMember_result == 'confirm' || isMember_result == 'sub'){
+                    }else if(isMember_result == 'confirm' || isMember_result == 'sub_master'){
                         document.getElementById('btn_sub').value='찬성';
                         document.getElementById('hidden_type').value='v';
                         if(response[0].status == 'confirm'){
@@ -177,13 +171,14 @@
         }else{
             document.getElementById('btn_sub').value='완료';
             document.getElementById('hidden_type').value='c';
+            document.getElementById('btn_sub').disabled=false;
+            document.getElementById('btn_res').disabled=false;
+            document.getElementById('etc').readOnly=false;
             if(isMember_result == 'master'){
                 document.getElementById('btn_sub').disabled=false;
                 document.getElementById('btn_res').disabled=false;
                 document.getElementById('etc').innerHTML = '';
                 document.getElementById('etc').readOnly=false;
-                console.log(memberCnt);
-                console.log(memberList);
                 if(memberCnt != null && memberList != null){
                     for(var i = 0; i <= memberCnt; i++){
                         var radio1 = document.getElementById(memberList[i]+'attend');
@@ -211,7 +206,7 @@
         $.ajax({
             url: '/AttendanceEvents',
             type: 'POST',
-            data: JSON.stringify({teamspace_id: 1}),
+            data: JSON.stringify({teamspace_id: document.getElementById('model_tsid_js').value}),
             dataType: 'JSON',
             contentType: 'application/json',
             success: function(response) {
@@ -226,7 +221,7 @@
                     }
                     events.push({
                         id: event.calendar_id,
-                        title: event.user_id+'-'+event.att_check,
+                        title: event.name+'-'+event.att_check,
                         start: event.calendar_date,
                         allDay: true,
                         color: event_color
@@ -347,7 +342,7 @@
                     <li th:each="i : ${#numbers.sequence(0, members.size()-1 )}">
                         <input type="hidden" th:id="${members[i].user_id}+user_id" th:field="*{user_id[__${i}__]}"/>
                         <input type="hidden" th:id="${members[i].user_id}+user_id2" th:value="${members[i].user_id}"/>
-                        <span th:text="${members[i].user_id}"></span>
+                        <span th:text="${members[i].name}"></span>
                         <input type="radio" th:name="att_check+${i}" th:id="${members[i].user_id}+attend" th:field="*{att_checks[__${i}__]}" value="attend"/>
                         <label th:for="${members[i].user_id}+attend+${i}">출석</label>
                         <input type="radio" th:name="att_check+${i}" th:id="${members[i].user_id}+late" th:field="*{att_checks[__${i}__]}" value="late"/>
