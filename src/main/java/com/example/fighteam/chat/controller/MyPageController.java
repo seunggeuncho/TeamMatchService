@@ -29,11 +29,10 @@ public class MyPageController {
     public String mypageChatList(Model model, HttpSession httpSession) {
         Long userId = (Long) httpSession.getAttribute("loginId");
         List<ChatRoom> findChatRoom = chatRoomRepository.findAllByUserIdOrPostUserId(userId,userId);
-        if(findChatRoom.size()==0){
-            log.info("size 0");
-        }
+
         List<MyPageDto> responseDto = new ArrayList<>();
         for (ChatRoom room : findChatRoom) {
+            if(room.getMessages().size()==0)continue;
             responseDto.add(new MyPageDto(room.getMessages().get(room.getMessages().size()-1).getCreatedTime(),
                     room.getMessages().get(room.getMessages().size()-1).getMessage(), room.getId()));
             log.info("{} {} {}",responseDto.get(0).getCreatedTime(),responseDto.get(0).getMessage(),responseDto.get(0).getRoomId());
