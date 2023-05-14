@@ -1,4 +1,4 @@
-//package com.example.fighteam.payment.repository;
+package com.example.fighteam.payment.repository;//package com.example.fighteam.payment.repository;
 //
 //import com.example.fighteam.payment.domain.Member;
 //import jakarta.persistence.EntityManager;

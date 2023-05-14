@@ -19,6 +19,7 @@ public class UserService {
     public void signUp(User user){
         user.setRole("USER");
         user.setJoinDate(LocalDateTime.now());
+        user.setScore(36);
         User save = userRepository.save(user);
         System.out.println("saveUser = " + save);
     }

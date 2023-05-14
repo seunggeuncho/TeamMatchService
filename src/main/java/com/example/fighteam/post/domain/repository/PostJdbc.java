@@ -35,8 +35,8 @@ public class PostJdbc implements PostRepository {
             pstmt.setLong(1, createPostDto.getUser_id());
             pstmt.setString(2, createPostDto.getTitle());
             pstmt.setString(3, createPostDto.getContent());
-            pstmt.setDate(4, new java.sql.Date(createPostDto.getStartdate().getTime()));
-            pstmt.setDate(5, new java.sql.Date(createPostDto.getEnddate().getTime()));
+            pstmt.setDate(4, new Date(createPostDto.getStartdate().getTime()));
+            pstmt.setDate(5, new Date(createPostDto.getEnddate().getTime()));
             pstmt.setInt(6, createPostDto.getRecruitdate());
             pstmt.setInt(7, createPostDto.getDeposit());
             pstmt.setInt(8, createPostDto.getCount());
@@ -138,8 +138,8 @@ public class PostJdbc implements PostRepository {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, createPostDto.getTitle());
             pstmt.setString(2, createPostDto.getContent());
-            pstmt.setDate(3,new java.sql.Date(createPostDto.getStartdate().getTime()));
-            pstmt.setDate(4, new java.sql.Date(createPostDto.getEnddate().getTime()));
+            pstmt.setDate(3,new Date(createPostDto.getStartdate().getTime()));
+            pstmt.setDate(4, new Date(createPostDto.getEnddate().getTime()));
             pstmt.setInt(5, createPostDto.getRecruitdate());
             pstmt.setInt(6, createPostDto.getDeposit());
             pstmt.setInt(7,createPostDto.getCount());
