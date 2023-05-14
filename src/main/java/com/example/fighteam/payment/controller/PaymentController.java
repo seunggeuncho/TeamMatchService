@@ -119,17 +119,9 @@ public class PaymentController {
         model.addAttribute("post", createPostDto);
 
 
-        return "redirect:/payment/success";
+        return "redirect:/payment/successPost";
     }
-    @GetMapping("payment/successPost")
-    public String paymentResultPost(HttpSession session, Model model) {
-        Long userId = (Long) session.getAttribute("loginId");
-        User user = userService.findUser(userId);
-        model.addAttribute("payment", user.getDeposit());
 
-        return "payment/member/payment/paymentResult";
-
-    }
 
 
     @GetMapping("payment/success")
@@ -139,6 +131,15 @@ public class PaymentController {
         model.addAttribute("payment", user.getDeposit());
 
         return "payment/member/payment/paymentResult";
+
+    }
+    @GetMapping("payment/successPost")
+    public String paymentPostResult(HttpSession session, Model model) {
+        Long userId = (Long) session.getAttribute("loginId");
+        User user = userService.findUser(userId);
+        model.addAttribute("payment", user.getDeposit());
+
+        return "payment/member/payment/paymentPostResult";
 
     }
     @ExceptionHandler(IllegalStateException.class)

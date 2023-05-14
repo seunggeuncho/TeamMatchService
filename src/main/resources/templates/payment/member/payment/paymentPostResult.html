@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <head th:replace="fragments/htmlHeader" >
-</head>
+    </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
 <div class="container-fluid">
@@ -15,7 +15,7 @@
                 <!-- 여기까지 공통으로 설정-->
                 <h1>결제 완료</h1>
                 <p>결제 후 잔액: <span th:text="${payment}"></span></p><br/>
-                </div>
+            </div>
             <button type="button" class="btn btn-danger" onclick="completeTask()">작업 완료</button>
 
 
@@ -25,7 +25,7 @@
 </div>
 <script>
     function completeTask() {
-        window.opener.location.href = window.opener.location.href;
+        window.opener.location.href = "/post/home";
         window.close();
     }
 </script>
