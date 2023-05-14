@@ -5,6 +5,7 @@ import com.example.fighteam.post.domain.Post;
 import com.example.fighteam.teamspace.domain.repository.Teamspace;
 import com.example.fighteam.user.domain.repository.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,6 +36,13 @@ public class Apply {
     private String status;
 
     public Apply() {
+    }
+
+    @Builder
+    public Apply(User user, int userDeposit, String status) {
+        this.user = user;
+        this.userDeposit = userDeposit;
+        this.status = status;
     }
 
     public Apply(User user, Post post, int userDeposit, String status) {

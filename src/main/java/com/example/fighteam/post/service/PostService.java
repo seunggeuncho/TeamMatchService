@@ -55,6 +55,21 @@ public class PostService {
 
     }
 
+
+    public Long createProjectWithPay(CreatePostDto createPostDto) {
+        List<String> language = createPostDto.getLanguageContent();
+        List<String> type = createPostDto.getTypeContent();
+        Long post_id;
+        post_id = postRepository.insertproject(createPostDto);
+        for(String L: language){
+            postRepository.insertlanguage(post_id, L);
+        }
+        for (String T: type){
+            postRepository.inserttype(post_id, T);
+        }
+        return post_id;
+    }
+
     public GetPostDetailResponseDto findByPostId(Long post_id){
 
         GetPostDetailResponseDto getPostDetailResponseDto = new GetPostDetailResponseDto();

@@ -16,10 +16,19 @@
                 <h1>결제 완료</h1>
                 <p>결제 후 잔액: <span th:text="${payment}"></span></p><br/>
                 </div>
+            <button type="button" onclick="completeTask()">작업 완료</button>
+
+
+            </script>
         </main>
     </div>
 </div>
-
+<script>
+    function completeTask() {
+        window.opener.location.href = "/post/home";
+        window.close();
+    }
+</script>
 
 </body>
 </html>
