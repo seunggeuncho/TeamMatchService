@@ -26,11 +26,22 @@ public class ApplyService {
     }
 
     public List<ApplyResponseDto> getApplyList(Long post_id) {
-        String sql = "select u.user_id, u.email, u.score, a.status from users u, apply a where post_id = ? and u.user_id = a.user_id";
+        String sql = "select u.name,u.user_id, u.email, u.score, a.status from users u, apply a where post_id = ? and u.user_id = a.user_id";
         List<ApplyResponseDto> apply_list = jdbcTemplate.query(sql, new Object[]{post_id}, new RowMapper<ApplyResponseDto>() {
             @Override
             public ApplyResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ApplyResponseDto applyResponseDto = new ApplyResponseDto(rs.getString("email"),rs.getInt("score"), rs.getLong("user_id"),rs.getString("status"));
+                ApplyResponseDto applyResponseDto = new ApplyResponseDto(rs.getString("name"),rs.getString("email"),rs.getInt("score"), rs.getLong("user_id"),rs.getString("status"));
+                return applyResponseDto;
+            }
+        });
+        return apply_list;
+    }
+    public List<ApplyResponseDto> getApplyListByTsid(Long teamspace_id) {
+        String sql = "select u.name,u.user_id, u.email, u.score, a.status from users u, apply a where teamspace_id = ? and u.user_id = a.user_id";
+        List<ApplyResponseDto> apply_list = jdbcTemplate.query(sql, new Object[]{teamspace_id}, new RowMapper<ApplyResponseDto>() {
+            @Override
+            public ApplyResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                ApplyResponseDto applyResponseDto = new ApplyResponseDto(rs.getString("name"),rs.getString("email"),rs.getInt("score"), rs.getLong("user_id"),rs.getString("status"));
                 return applyResponseDto;
             }
         });

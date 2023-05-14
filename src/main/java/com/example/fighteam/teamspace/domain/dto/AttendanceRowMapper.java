@@ -24,6 +24,7 @@ public class AttendanceRowMapper implements RowMapper<AttendanceResponseDto> {
         attendanceResponseDto.setAtt_check(rs.getString("att_check"));
         attendanceResponseDto.setEtc(rs.getString("etc"));
         attendanceResponseDto.setStatus(rs.getString("status"));
+        attendanceResponseDto.setName(rs.getString("name"));
         return attendanceResponseDto;
     }
 }

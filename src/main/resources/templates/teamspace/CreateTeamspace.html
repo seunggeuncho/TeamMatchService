@@ -107,14 +107,14 @@
   <div id="applier_list">
     <table class="table" id="applier_table">
       <thead>
-      <th scope="col">아이디</th>
+      <th scope="col">이름</th>
       <th scope="col">평점</th>
       <th scope="col"></th>
       <th scope="col"></th>
       </thead>
       <tbody th:if="${not #lists.isEmpty(applyList)}">
       <tr th:each="apply : ${applyList}" th:if="${apply.apply_status == 'false'}">
-        <td th:text="${apply.user_id}"></td>
+        <td th:text="${apply.name}"></td>
         <td th:text="${apply.score}"></td>
         <td>
           <form method="post" action="/chat/creating">
@@ -134,7 +134,7 @@
   <div id="member_table">
     <table class="table">
       <thead>
-      <th scope="col">아이디</th>
+      <th scope="col">이름</th>
       <th scope="col">이메일</th>
       <th scope="col">평점</th>
       <th scope="col"></th>
@@ -142,7 +142,7 @@
       </thead>
       <tbody th:if="${not #lists.isEmpty(applyList)}">
       <tr th:each="apply : ${applyList}" th:if="${apply.apply_status != 'false'}">
-        <td th:text="${apply.user_id}"></td>
+        <td th:text="${apply.name}"></td>
         <td th:text="${apply.email}"></td>
         <td th:text="${apply.score}"></td>
         <td th:if="${apply.apply_status == 'confirm'}"><input class="btn btn-danger" type="button" th:onclick="openModal2([[${apply.user_id}]],[[${post_id}]],'deny' )" value="수락 취소"/></td>
@@ -166,14 +166,14 @@
           <input type="text" name="teamspace_name" class="form-control" placeholder="TeamspaceName" aria-label="TeamspaceName" aria-describedby="basic-addon1">
           <table class="table">
             <thead>
-            <th scope="col">아이디</th>
+            <th scope="col">이름</th>
             <th scope="col">이메일</th>
             <th scope="col">평점</th>
             <th scope="col">부팀장 선택</th>
             </thead>
             <tbody th:if="${not #lists.isEmpty(applyList)}">
             <tr th:each="apply : ${applyList}" th:if="${apply.apply_status != 'false'}">
-              <td th:text="${apply.user_id}"></td>
+              <td th:text="${apply.name}"></td>
               <td th:text="${apply.email}"></td>
               <td th:text="${apply.score}"></td>
               <td th:if="${apply.apply_status == 'confirm'}"><input type="radio" name="sub_master" th:value="${apply.user_id}"/> </td>

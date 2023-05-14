@@ -11,8 +11,10 @@ public class ApplyResponseDto {
     private Long user_id;
     private String apply_status;
     private String email;
+    private String name;
 
-    public ApplyResponseDto(String email,int score, Long user_id, String apply_status) {
+    public ApplyResponseDto(String name, String email,int score, Long user_id, String apply_status) {
+        this.name =name;
         this.email = email;
         this.score = score;
         this.user_id = user_id;

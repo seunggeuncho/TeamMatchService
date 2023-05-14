@@ -2,6 +2,7 @@ package com.example.fighteam.teamspace.controller;
 
 import com.example.fighteam.apply.domain.dto.ApplyResponseDto;
 import com.example.fighteam.apply.service.ApplyService;
+import com.example.fighteam.post.service.PostService;
 import com.example.fighteam.teamspace.domain.dto.AttendanceCheckRequestDto;
 import com.example.fighteam.teamspace.domain.dto.AttendanceResponseDto;
 import com.example.fighteam.teamspace.domain.dto.HistoryDto;
@@ -27,6 +28,8 @@ public class TeamspaceController {
     private TeamspaceService teamspaceService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private PostService postService;
 
     @GetMapping("/attendanceMain")
     public String attendanceMain(@RequestParam("teamspace_id") Long teamspace_id,HttpSession session, Model model){
@@ -53,7 +56,7 @@ public class TeamspaceController {
                 model.addAttribute("memCnt",members.size());
                 model.addAttribute("attendanceCheck",attendanceCheckRequestDto);
                 //List<Deposit> list2 = depositService.getDeposit(user_id,Teamspcae_id);
-                url = "/teamspace/AttendanceMain";
+                url = "teamspace/AttendanceMain";
             }else{
                 url = "redirect:/TeamspaceErrorManager?error_code=nm"; //not member
             }
@@ -81,7 +84,6 @@ public class TeamspaceController {
     public String CreateTeamspacePro(@RequestParam("post_id") String post_id,@RequestParam("teamspace_name") String teamspace_name,
                                      @RequestParam("sub_master")Long sub_master, Model model,HttpSession session){
         String url = "";
-        System.out.println("post_id:"+post_id);
         if(session.getAttribute("loginId") == null){
             url = "redirect:/TeamspaceErrorManager?error_code=nl"; //need login
         }else{
@@ -89,8 +91,9 @@ public class TeamspaceController {
             if(teamspaceService.isMaster(session_user_id,Long.valueOf(post_id))){
                 if(!teamspaceService.TeamspaceIsExistByPost(post_id)){
                     Long master = teamspaceService.getMasterFromApply(post_id);
-                    Long teamspace_id = teamspaceService.CreateTeamspace(post_id,master,sub_master,teamspace_name);
+                    String teamspace_id = teamspaceService.CreateTeamspace(post_id,master,sub_master,teamspace_name);
                     teamspaceService.AppointSub(sub_master,post_id);
+//                    postService.completepost(post_id);
                     url = "redirect:/attendanceMain?teamspace_id="+teamspace_id;
                 }else{
                     url = "redirect:/TeamspaceErrorManager?error_code=et";//exist teamspace
@@ -110,11 +113,11 @@ public class TeamspaceController {
         }else{
             Long session_user_id = Long.valueOf(session.getAttribute("loginId").toString());
             if(teamspaceService.isMaster(session_user_id,post_id)){
-                if(teamspaceService.TeamspaceIsExistByPost(post_id.toString())){//배포시 조건에!
+                if(!teamspaceService.TeamspaceIsExistByPost(post_id.toString())){//배포시 조건에!
                     List<ApplyResponseDto> apply_List = applyService.getApplyList(post_id);
                     model.addAttribute("applyList",apply_List);
                     model.addAttribute("post_id", post_id);
-                    url = "/teamspace/CreateTeamspace";
+                    url = "teamspace/CreateTeamspace";
                 }else{
                     url = "redirect:/TeamspaceErrorManager?error_code=et";//exist teamspace
                 }
@@ -166,13 +169,16 @@ public class TeamspaceController {
         }else{
             Long user_id = Long.valueOf(session.getAttribute("loginId").toString());
             if(teamspaceService.isMemberByTsid(user_id,teamspace_id)){
-                List<ApplyResponseDto> apply_List = applyService.getApplyList(teamspace_id);
+                List<ApplyResponseDto> apply_List = applyService.getApplyListByTsid(teamspace_id);
+                for(int i = 0; i < apply_List.size(); i++){
+                    System.out.println(apply_List.get(i).getUser_id());
+                }
                 List<Long> rvd_list = teamspaceService.getReviewList(teamspace_id,user_id);
                 model.addAttribute("applyList", apply_List);
                 model.addAttribute("rvd_list",rvd_list);
                 model.addAttribute("teamspace_id",teamspace_id);
                 model.addAttribute("user_id", user_id);
-                url = "/teamspace/ReviewTeammates";
+                url = "teamspace/ReviewTeammates";
             }else{
                 url = "redirect:/TeamspaceErrorManager?error_code=nm"; //not member
             }
@@ -209,14 +215,8 @@ public class TeamspaceController {
         }else{
             Long user_id = Long.valueOf(session.getAttribute("loginId").toString());
             List<TeamspaceMyPageResponseDto> team_list = teamspaceService.myPageTeamspaceList(user_id);
-            if(team_list.isEmpty()){
-                System.out.println("isEmpty");
-            }else{
-                System.out.println("notEmpty");
-                System.out.println(team_list.get(0).getPost_id());
-            }
             model.addAttribute("team_list",team_list);
-            url = "/teamspace/myPageTeamspace";
+            url = "teamspace/myPageTeamspace";
         }
         return url;
     }

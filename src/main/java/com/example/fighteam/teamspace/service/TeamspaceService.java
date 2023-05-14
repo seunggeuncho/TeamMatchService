@@ -64,8 +64,7 @@ public class TeamspaceService {
         String[] users_id = attendanceCheckRequestDto.getUser_id();
         int rowCnt = 0;
         for(int i = 0; i < users_id.length; i++){
-            Long member_id = Long.parseLong(users_id[i]);
-            rowCnt += jdbcTemplate.update(sql,teamspace_id, member_id,attendanceCheckRequestDto.getCalendar_date(),
+            rowCnt += jdbcTemplate.update(sql,teamspace_id, users_id[i],attendanceCheckRequestDto.getCalendar_date(),
                     attendanceCheckRequestDto.getAtt_checks()[i],attendanceCheckRequestDto.getEtc(),"unconfirm");
         }
         String vote_sql = "insert into att_vote(vote_id, teamspace_id, user_id, calendar_date, vote) " +
@@ -97,24 +96,27 @@ public class TeamspaceService {
         return rowCnt;
     }
     public List<AttendanceResponseDto> getMember(long teamspace_id){
-        String sql = "select user_id from apply where teamspace_id = ?";
+        String sql = "select a.user_id, name from apply a, users u where teamspace_id = ? and a.user_id = u.user_id";
         List<AttendanceResponseDto> members= jdbcTemplate.query(sql, new Object[]{teamspace_id}, new RowMapper<AttendanceResponseDto>() {
             @Override
             public AttendanceResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 AttendanceResponseDto attendanceResponseDto = new AttendanceResponseDto();
                 attendanceResponseDto.setUser_id(rs.getLong("user_id"));
+                attendanceResponseDto.setName(rs.getString("name"));
                 return attendanceResponseDto;
             }
         });
         return  members;
     }
-    public Long CreateTeamspace(String post_id, Long master, Long sub_master,String teamspace_name){
-        String delete_sql = "delete from apply where post_id = ? and status is 'false'";
+    public String CreateTeamspace(String post_id, Long master, Long sub_master,String teamspace_name){
+        String delete_sql = "delete from apply where post_id = ? and status = 'false'";
         jdbcTemplate.update(delete_sql,post_id);
         String insert_sql = "insert into team_space(teamspace_id, post_id, teamspace_name, master, sub_master) values(nextval('seq_teamspace_id'), ?, ?, ?,?)";
         jdbcTemplate.update(insert_sql, post_id, teamspace_name, master, sub_master);
-        String select_sql = "select distinct teamspace_id from apply where post_id = ?";
-        Long teamspace_id = jdbcTemplate.queryForObject(select_sql, new Object[]{post_id}, Long.class);
+        String select_sql = "select  teamspace_id from team_space where post_id = ?";
+        String teamspace_id = jdbcTemplate.queryForObject(select_sql, new Object[]{post_id}, String.class);
+        String update_sql = "update apply set teamspace_id = ? where post_id = ?";
+        jdbcTemplate.update(update_sql,teamspace_id,post_id);
         return teamspace_id;
     }
 
@@ -126,7 +128,7 @@ public class TeamspaceService {
         }catch (EmptyResultDataAccessException e){
             status = null;
         }
-        if(status.equals("master")){
+        if(status != null && status.equals("master")){
             return true;
         }else{
             return false;
@@ -140,14 +142,13 @@ public class TeamspaceService {
         }catch (EmptyResultDataAccessException e){
             status = null;
         }
-        if(status.equals(null)){
+        if(status == null){
             return false;
         }else{
             return true;
         }
     }
     public boolean isMemberByTsid(Long user_id, Long teamspace_id){
-        System.out.println("user:"+user_id+"team:"+teamspace_id);
         String sql = "select status from apply where user_id = ? and teamspace_id = ?";
         String status = null;
         try{
@@ -155,7 +156,7 @@ public class TeamspaceService {
         }catch (EmptyResultDataAccessException e){
             status = null;
         }
-        if(status.equals(null)){
+        if(status == null){
             return false;
         }else{
             return true;
@@ -181,12 +182,12 @@ public class TeamspaceService {
     }
 
     public int attVote(AttendanceCheckRequestDto attendanceCheckRequestDto){
-        String sql = "insert into att_vote(vote_id, teampsace_id, user_id, calendar_date, vote) values(nextval('seq_vote_id', ?,?,?,'agree')";
+        String sql = "insert into att_vote(vote_id, teamspace_id, user_id, calendar_date, vote) values(nextval('seq_vote_id'), ?,?,?,'agree')";
         return jdbcTemplate.update(sql,attendanceCheckRequestDto.getTeamspace_id(),attendanceCheckRequestDto.getWriter(),attendanceCheckRequestDto.getCalendar_date());
     }
 
     public void voteConfirmCheck(AttendanceCheckRequestDto attendanceCheckRequestDto){
-        String sql = "update attendance set status = 'confirm' where teamspace_id = ? and calendar_date = ? and (select count(user_id) from att_vote where teamspace_id = ? and  calendar_date = ? and vote = 'agree') > (select count(user_id) from apply where teamspace_id = ?)";
+        String sql = "update attendance set status = 'confirm' where teamspace_id = ? and FORMATDATETIME(calendar_date, 'yyyy-MM-dd') = ? and (select count(user_id) from att_vote where teamspace_id = ? and  FORMATDATETIME(calendar_date, 'yyyy-MM-dd') = ? and vote = 'agree') > (select count(user_id) from apply where teamspace_id = ?)/2";
         String teamspace_id = attendanceCheckRequestDto.getTeamspace_id();
         String calendar_date = attendanceCheckRequestDto.getCalendar_date();
         jdbcTemplate.update(sql, teamspace_id, calendar_date, teamspace_id,calendar_date,teamspace_id);
@@ -221,8 +222,14 @@ public class TeamspaceService {
     }
     public boolean TeamspaceIsExistByPost(String post_id){
         String sql = "select teamspace_id from team_space where post_id = ?";
-        String tsid = jdbcTemplate.queryForObject(sql, new Object[]{post_id}, String.class);
-        if(tsid.equals(null)){
+        String tsid = null;
+        try{
+            tsid = jdbcTemplate.queryForObject(sql, new Object[]{post_id}, String.class);
+        }catch (EmptyResultDataAccessException e){
+            tsid = null;
+        }
+
+        if(tsid==null){
             return false;
         }else{
             return true;
