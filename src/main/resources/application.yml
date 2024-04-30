@@ -1,10 +1,13 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/fighTeam
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
+    #url: jdbc:h2:tcp://localhost/~/test
+    #username: sa
+    #password:
+    #driver-class-name: org.h2.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${DB_url}:${DB_port}/{DB_dataBaseName}?characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${DB_name}
+    password: ${DB_password}
   jpa:
     hibernate:
       ddl-auto: create # create 애플리케이션 실행 시점에 엔티티를 다 지우고 다시 시작
