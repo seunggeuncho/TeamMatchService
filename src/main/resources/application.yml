@@ -5,7 +5,7 @@ spring:
     #password:
     #driver-class-name: org.h2.Driver
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${DB_url}:${DB_port}/{DB_dataBaseName}?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mariadb://${DB_url}:${DB_port}/${DB_dataBaseName}?characterEncoding=UTF-8&serverTimezone=UTC
     username: ${DB_name}
     password: ${DB_password}
   jpa:
