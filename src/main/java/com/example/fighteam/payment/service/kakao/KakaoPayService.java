@@ -39,9 +39,9 @@ public class KakaoPayService {
         parameters.add("quantity", String.valueOf(1));
         parameters.add("total_amount", String.valueOf(totalAmount));
         parameters.add("tax_free_amount", "0");
-        parameters.add("approval_url", "http://localhost:8080/charge/pay/completed"); // 결제승인시 넘어갈 url
-        parameters.add("cancel_url", "http://localhost:8080/charge/pay/cancel"); // 결제취소시 넘어갈 url
-        parameters.add("fail_url", "http://localhost:8080/charge/pay/fail"); // 결제 실패시 넘어갈 url
+        parameters.add("approval_url", "https://port-0-teammatchservice-1cupyg2klvm5dc4u.sel5.cloudtype.app/charge/pay/completed"); // 결제승인시 넘어갈 url
+        parameters.add("cancel_url", "https://port-0-teammatchservice-1cupyg2klvm5dc4u.sel5.cloudtype.app/charge/pay/cancel"); // 결제취소시 넘어갈 url
+        parameters.add("fail_url", "https://port-0-teammatchservice-1cupyg2klvm5dc4u.sel5.cloudtype.app/charge/pay/fail"); // 결제 실패시 넘어갈 url
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, getHeaders());
 
