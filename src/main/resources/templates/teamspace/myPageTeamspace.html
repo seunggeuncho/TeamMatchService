@@ -53,7 +53,7 @@
                 </form>
             </td>
             <td th:if="${team.teamspace_status}=='wait'">
-                <form method="get" action=""><!-- 포스트 디테일 액션에 추가-->
+                <form method="get" th:action="@{'/post/res/' + ${team.post_id}}"><!-- 포스트 디테일 액션에 추가-->
                     <input type="hidden" th:value="${team.post_id}" name="post_id"/>
                     <input type="submit" class="btn btn-primary" value="게시글 이동"/>
                 </form>

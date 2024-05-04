@@ -8,10 +8,13 @@ public interface PostRepository {
     Long insertproject(CreatePostDto createPostDto);
     Boolean removepost(Long post_id);
 
-    Boolean insertlanguage(Long post_id, String language);
+    Boolean insertlanguage(Long post_id, Integer language_id);
 
-    Boolean inserttype(Long post_id, String type);
+    Integer languageId(String language);
 
+    Boolean inserttype(Long post_id, Integer type);
+
+    Integer typeId(String type);
     List<GetBoardResponseDto> findAllBoard(String topic, int page, int count);
 
     List<String>findlanguage(Long post_id);

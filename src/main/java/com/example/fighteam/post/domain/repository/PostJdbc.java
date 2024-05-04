@@ -1,6 +1,7 @@
 package com.example.fighteam.post.domain.repository;
 
 import com.example.fighteam.post.domain.dto.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+@Slf4j
 public class PostJdbc implements PostRepository {
 
     private final DataSource dataSource;
@@ -201,16 +202,15 @@ public class PostJdbc implements PostRepository {
 
 
     @Override
-    public Boolean insertlanguage(Long post_id, String language) {
-        String sql = "insert into post_language(post_id, language_id) values(?, " +
-                "select language_id from language where language_content = ?)";
+    public Boolean insertlanguage(Long post_id, Integer language_id) {
+        String sql = "insert into post_language(post_id, language_id) values(?,?)";
         Boolean result = null;
         int row = 0;
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, post_id);
-            pstmt.setString(2, language);
+            pstmt.setInt(2, language_id);
             row = pstmt.executeUpdate();
         }catch(Exception e){
             e.printStackTrace();
@@ -221,17 +221,59 @@ public class PostJdbc implements PostRepository {
     }
 
     @Override
-    public Boolean inserttype(Long post_id, String type) {
-        String sql = "insert into post_type(post_id, type_id) values(?, " +
-                "select type_id from type where type_content = ?)";
+    public Integer languageId(String language) {
+        log.info("language ={}", language);
+        String sql = "select language_id from language where language_content = ?";
+        Integer result = null;
+        int row = 0;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, language);
+            rs = pstmt.executeQuery();
+            if (rs.next()){
+                result = rs.getInt("language_id");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+        return result;
+    }
+
+    @Override
+    public Boolean inserttype(Long post_id, Integer type) {
+        String sql = "insert into post_type(post_id, type_id) values(?,?)";
         Boolean result = null;
         int row;
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, post_id);
-            pstmt.setString(2, type);
+            pstmt.setInt(2, type);
             row = pstmt.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            close(conn, pstmt, rs);
+        }
+        return result;
+    }
+
+    @Override
+    public Integer typeId(String type) {
+        String sql = "select type_id from type where type_content = ?";
+        Integer result = null;
+        int row = 0;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, type);
+            rs = pstmt.executeQuery();
+            if (rs.next()){
+                result = rs.getInt("type_id");
+            }
         }catch(Exception e){
             e.printStackTrace();
         }finally {
@@ -244,29 +286,26 @@ public class PostJdbc implements PostRepository {
     public List<GetBoardResponseDto> findAllBoard(String topic, int page, int count) {
         int start = page * count -(count -1);
         int end = page * count;
-
+        log.info("page = {}, count = {}, start = {}, end = {}",page, count, start, end);
         String sql = "";
         if (topic.equals("study")){
-            sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM ("
-                    +" SELECT ROWNUM NUM, N.* FROM ("+
-                    "SELECT *FROM post_table where subject = 'study' and complete = '0' ORDER BY date  DESC) N) "
-                    +"WHERE NUM BETWEEN ? AND ?";
+            sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM (SELECT ROW_NUMBER() OVER () AS NUM, N.* FROM " +
+                    "(SELECT * FROM post_table WHERE subject = 'study' AND complete = '0') N)" +
+                    " numbered_posts ORDER BY date DESC LIMIT ?, ?";
         }else if(topic.equals("project")){
-            sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM ("
-                    +" SELECT ROWNUM NUM, N.* FROM ("+
-                    "SELECT *FROM post_table where subject = 'project' and complete = '0' ORDER BY date  DESC) N) "
-                    +"WHERE NUM BETWEEN ? AND ?";
+            sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM (SELECT ROW_NUMBER() OVER () AS NUM, N.* FROM " +
+                    "(SELECT * FROM post_table WHERE subject = 'project' AND complete = '0') N)" +
+                    " numbered_posts ORDER BY date DESC LIMIT ?, ?";
         } else{
-            sql = "SELECT title, user_id, post_id, enddate, count, subject, deposit FROM ("
-                   +" SELECT ROWNUM NUM, N.* FROM ("+
-                            "SELECT *FROM post_table where complete = '0' ORDER BY date  DESC) N) "
-            +"WHERE NUM BETWEEN ? AND ?";
+            sql = "SELECT title, user_id, post_id, enddate, count, subject, " +
+                    "deposit FROM (SELECT ROW_NUMBER() OVER () AS NUM, N.* " +
+                    "FROM (SELECT * FROM post_table WHERE complete = '0') N) numbered_posts ORDER BY date DESC LIMIT ?, ?;";
         }
         List<GetBoardResponseDto> getBoardResponseDto = new ArrayList<>();
         try{
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, start);
+            pstmt.setInt(1, start - 1);
             pstmt.setInt(2,end);
             rs = pstmt.executeQuery();
             while(rs.next()){
@@ -395,33 +434,47 @@ public class PostJdbc implements PostRepository {
         int end = page * count;
         String sql;
         if (topic.equals("study")){
-            sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
+/*            sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
                     " deposit, date, language_content, rownum num from (select language_content, " +
                     "post_id from (select p.post_id post_id ,language_id from post_table p inner " +
                     "join post_language l on p.post_id = l.post_id order by date desc) a  inner join language l " +
                     "on a.language_id = l.language_id) s inner join post_table p on s.post_id = p.post_id" +
-                    " where complete='0' and language_content = ? and subject = 'study') where num between ? and ?";
+                    " where complete='0' and language_content = ? and subject = 'study') LIMIT ?,?";*/
+            sql = "select title, user_id, p.post_id, enddate, count, subject,deposit, date, language_content from " +
+                    "(select language_content, post_id from (select p.post_id post_id ,language_id from post_table p inner " +
+                    "join post_language l on p.post_id = l.post_id) a inner join language l on a.language_id = l.language_id)" +
+                    " s inner join post_table p on s.post_id = p.post_id where complete = '0' and language_content = ? " +
+                    "and subject = 'study'  order by date desc LIMIT ?,?";
         } else if(topic.equals("project")){
-            sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
+            /*sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
                     " deposit, date, language_content, rownum num from (select language_content, " +
                     "post_id from (select p.post_id post_id ,language_id from post_table p inner " +
                     "join post_language l on p.post_id = l.post_id  order by date desc) a inner join language l " +
                     "on a.language_id = l.language_id) s inner join post_table p on s.post_id = p.post_id" +
-                    " where complete='0' and language_content = ? and subject = 'project') where num between ? and ?";
+                    " where complete='0' and language_content = ? and subject = 'project') where num between ? and ?";*/
+            sql = "select title, user_id, p.post_id, enddate, count, subject,deposit, date, language_content from " +
+                    "(select language_content, post_id from (select p.post_id post_id ,language_id from post_table p inner " +
+                    "join post_language l on p.post_id = l.post_id) a inner join language l on a.language_id = l.language_id)" +
+                    " s inner join post_table p on s.post_id = p.post_id where complete = '0' and language_content = ? " +
+                    "and subject = 'project'  order by date desc LIMIT ?,?";
         } else{
-            sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
+            /*sql = "select * from (select title, user_id, p.post_id, enddate, count, subject," +
                     " deposit, date, language_content, rownum num from (select language_content, " +
                     "post_id from (select p.post_id post_id ,language_id from post_table p inner " +
                     "join post_language l on p.post_id = l.post_id order by date desc) a inner join language l " +
                     "on a.language_id = l.language_id) s inner join post_table p on s.post_id = p.post_id" +
-                    " where complete='0' and language_content = ?) where num between ? and ?";
+                    " where complete='0' and language_content = ?) where num between ? and ?";*/
+            sql = "select title, user_id, p.post_id, enddate, count, subject,deposit, date, language_content from " +
+                    "(select language_content, post_id from (select p.post_id post_id ,language_id from post_table p inner " +
+                    "join post_language l on p.post_id = l.post_id) a inner join language l on a.language_id = l.language_id)" +
+                    " s inner join post_table p on s.post_id = p.post_id where complete = '0' and language_content = ? order by date desc LIMIT ?,?";
         }
         List<GetBoardResponseDto> getBoardResponseDto = new ArrayList<>();
         try{
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1,language);
-            pstmt.setInt(2,start);
+            pstmt.setInt(2,start - 1);
             pstmt.setInt(3,end);
             rs = pstmt.executeQuery();
             while(rs.next()){

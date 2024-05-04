@@ -3,6 +3,7 @@ package com.example.fighteam.post.service;
 import com.example.fighteam.post.domain.dto.*;
 import com.example.fighteam.post.domain.repository.CommentRepository;
 import com.example.fighteam.post.domain.repository.PostRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
+@Slf4j
 public class PostService {
 
     private final PostRepository postRepository;
@@ -47,10 +49,12 @@ public class PostService {
         Long post_id;
         post_id = postRepository.insertproject(createPostDto);
         for(String L: language){
-            postRepository.insertlanguage(post_id, L);
+            Integer languageId = postRepository.languageId(L);
+            postRepository.insertlanguage(post_id, languageId);
         }
         for (String T: type){
-            postRepository.inserttype(post_id, T);
+            Integer typeId = postRepository.typeId(T);
+            postRepository.inserttype(post_id, typeId);
         }
 
     }
@@ -62,10 +66,14 @@ public class PostService {
         Long post_id;
         post_id = postRepository.insertproject(createPostDto);
         for(String L: language){
-            postRepository.insertlanguage(post_id, L);
+            log.info("L ={}", L);
+            Integer languageId = postRepository.languageId(L);
+            log.info("languageId= {}", languageId);
+            postRepository.insertlanguage(post_id, languageId);
         }
         for (String T: type){
-            postRepository.inserttype(post_id, T);
+            Integer typeId = postRepository.typeId(T);
+            postRepository.inserttype(post_id, typeId);
         }
         return post_id;
     }
@@ -148,10 +156,12 @@ public class PostService {
         List<String> language = createPostDto.getLanguageContent();
         List<String> type = createPostDto.getTypeContent();
         for(String L: language){
-            postRepository.insertlanguage(id, L);
+            Integer languageId = postRepository.languageId(L);
+            postRepository.insertlanguage(id, languageId);
         }
         for (String T: type){
-            postRepository.inserttype(id, T);
+            Integer typeId = postRepository.typeId(T);
+            postRepository.inserttype(id, typeId);
         }
         postRepository.updatepost(createPostDto,id);
     }
